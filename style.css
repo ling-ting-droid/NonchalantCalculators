@@ -1,0 +1,11 @@
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body { 
+  font-family: 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', Arial, sans-serif; 
+  background: #f8f9fa; 
+  color: #202124; 
+  margin: 0; 
+}
