@@ -14,6 +14,7 @@
       padding: 40px;
       position: relative;
     }
+
     .button {
       background: #ff0077;
       color: white;
@@ -25,14 +26,17 @@
       margin-bottom: 10px;
       transition: transform 0.2s;
     }
+
     .button:hover {
       transform: scale(1.05);
     }
+
     .library, .result {
       margin-top: 20px;
       max-width: 600px;
       width: 100%;
     }
+
     .game-entry {
       background: #222;
       padding: 10px 15px;
@@ -42,6 +46,7 @@
       animation: fadeIn 0.6s ease forwards;
       cursor: pointer;
     }
+
     .common { color: #aaa; }
     .rare { color: #00faff; }
     .epic { color: #cc00ff; }
@@ -115,7 +120,6 @@
       align-self: flex-end;
     }
 
-    /* slot machine styles */
     .slot-machine {
       display: flex;
       gap: 20px;
@@ -187,20 +191,24 @@
       { name: "Bloons TD", rarity: "legendary", link: "bloons/index.html" }
     ];
 
-    const rarities = {
-      common: 60,
-      rare: 25,
-      epic: 10,
-      legendary: 5
-    };
+    const rarities = { common: 60, rare: 25, epic: 10, legendary: 5 };
+    const trashPunishments = [
+      "beat flappy bird with 30 score or no pulls for 1 min 😭",
+      "play slope for 60 seconds or ur pull privileges gone 💀",
+      "common?? pull again and u catching detention",
+      "draw a legendary in real life and submit to SOL for approval ✍️",
+      "touch grass in 2D or wait 1 min"
+    ];
 
     const library = [];
 
     const pullBtn = document.querySelector(".button");
     const timerBar = document.getElementById("timer-bar");
+    const resultDiv = document.querySelector(".result");
 
-    let cooldown = 30; // seconds
+    let cooldown = 30;
     let timerInterval;
+    let punishmentTimer;
 
     function startTimer() {
       let timeLeft = cooldown;
@@ -210,7 +218,6 @@
       timerInterval = setInterval(() => {
         timeLeft--;
         updateTimerBar(timeLeft);
-
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
           pullBtn.disabled = false;
@@ -226,14 +233,12 @@
 
     function rollGame() {
       if (pullBtn.disabled) return;
-
       pullBtn.disabled = true;
       startTimer();
 
       const reel1 = document.getElementById("reel1");
       const reel2 = document.getElementById("reel2");
       const reel3 = document.getElementById("reel3");
-      const resultDiv = document.querySelector(".result");
 
       const shuffled = [...games].sort(() => 0.5 - Math.random());
 
@@ -274,13 +279,50 @@
           updateLibrary();
         }
 
-        resultDiv.innerHTML = `
-          <div class="result-animation ${selected.rarity}">
-            🎉 You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
-            <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
-          </div>
-        `;
+        if (selected.rarity === "common" && Math.random() < 0.5) {
+          const punishment = trashPunishments[Math.floor(Math.random() * trashPunishments.length)];
+          pullBtn.disabled = true;
+          clearInterval(timerInterval);
+
+          resultDiv.innerHTML = `
+            <div class="result-animation common">
+              🤢 Common pull detected... ${selected.name}???<br><br>
+              🔒 <i>${punishment}</i><br><br>
+              <button id="punish-skip-btn" class="button" onclick="skipPunishment()" disabled>Wait...</button>
+            </div>
+          `;
+          startPunishmentTimer(60); // time in seconds
+        } else {
+          resultDiv.innerHTML = `
+            <div class="result-animation ${selected.rarity}">
+              🎉 You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
+              <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
+            </div>
+          `;
+        }
       }, 2000);
+    }
+
+    function startPunishmentTimer(seconds) {
+      const btn = document.getElementById("punish-skip-btn");
+      let timeLeft = seconds;
+      btn.textContent = `Wait ${timeLeft}s...`;
+
+      punishmentTimer = setInterval(() => {
+        timeLeft--;
+        btn.textContent = `Wait ${timeLeft}s...`;
+        if (timeLeft <= 0) {
+          clearInterval(punishmentTimer);
+          btn.disabled = false;
+          btn.textContent = "I Did It 😇";
+        }
+      }, 1000);
+    }
+
+    function skipPunishment() {
+      pullBtn.disabled = false;
+      timerBar.style.width = "100%";
+      resultDiv.innerHTML = `<div class="result-animation">✅ Punishment cleared. Pull again if u dare 😤</div>`;
     }
 
     function updateLibrary() {
