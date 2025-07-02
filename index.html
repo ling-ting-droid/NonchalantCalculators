@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>crazycals</title>
+  <title>SOL's RNG Game Pull</title>
   <style>
     body {
       background: #111;
@@ -13,6 +13,7 @@
       align-items: center;
       padding: 40px;
       position: relative;
+      overflow-x: hidden;
     }
     .button {
       background: #ff0077;
@@ -115,7 +116,7 @@
   </style>
 </head>
 <body>
-  <h1>🎲 time killer 🎮</h1>
+  <h1>🎲 SOL's RNG Game Generator 🎮</h1>
   <button class="button" onclick="rollGame()">Pull a Game</button>
 
   <div class="result"></div>
@@ -129,6 +130,8 @@
     <button class="close-btn" onclick="closePopup()">✖ Close</button>
     <iframe id="popupFrame"></iframe>
   </div>
+
+  <canvas id="confettiCanvas" style="position:fixed;top:0;left:0;pointer-events:none;z-index:2000;"></canvas>
 
   <script>
     const games = [
@@ -167,6 +170,8 @@
           ⭐ You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
           <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
         </div>`;
+
+      if (selected.rarity === "legendary") startConfetti();
     }
 
     function updateLibrary() {
@@ -196,6 +201,50 @@
       frame.src = "";
       popup.style.display = "none";
       blur.style.display = "none";
+    }
+
+    // Confetti
+    let confetti;
+    function startConfetti() {
+      if (!confetti) {
+        const canvas = document.getElementById("confettiCanvas");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        confetti = confettiCanvas.getContext("2d");
+        launchConfetti(canvas, confetti);
+      }
+    }
+
+    function launchConfetti(canvas, ctx) {
+      const pieces = [];
+      for (let i = 0; i < 100; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * -canvas.height,
+          size: Math.random() * 6 + 4,
+          speed: Math.random() * 3 + 2,
+          color: `hsl(${Math.random() * 360}, 100%, 60%)`,
+          angle: Math.random() * 360
+        });
+      }
+      let frame = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.y += p.speed;
+          p.angle += 5;
+          ctx.fillStyle = p.color;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle * Math.PI / 180);
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+        frame++;
+        if (frame < 100) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
     }
   </script>
 </body>
