@@ -190,11 +190,8 @@
   <h1>🎲 SOL's RNG Game Generator 🎮</h1>
   <button class="button" onclick="rollGame()">Pull a Game</button>
 
-  <div
-    class="roast-log"
-    id="roastLog"
-    style="max-width: 600px; margin-top: 20px; text-align: left; opacity: 0"
-  ></div>
+ <div class="roast-log" id="roastLog" style="max-width: 600px; margin-top: 20px; text-align: left;"></div>
+
 
   <div
     id="timer-container"
@@ -265,7 +262,7 @@
     const timerBar = document.getElementById("timer-bar");
     const resultDiv = document.querySelector(".result");
 
-    let cooldown = 30;
+    let cooldown = 3;
     let timerInterval;
 
     function startTimer() {
