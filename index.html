@@ -12,6 +12,7 @@
       flex-direction: column;
       align-items: center;
       padding: 40px;
+      position: relative;
     }
     .button {
       background: #ff0077;
@@ -39,6 +40,7 @@
       margin: 8px 0;
       opacity: 0;
       animation: fadeIn 0.6s ease forwards;
+      cursor: pointer;
     }
     .common { color: #aaa; }
     .rare { color: #00faff; }
@@ -62,6 +64,54 @@
       50% { transform: scale(1.1); opacity: 1; }
       100% { transform: scale(1); opacity: 1; }
     }
+
+    @keyframes popupAppear {
+      0% { opacity: 0; transform: translate(-50%, -60%) scale(0.95); }
+      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+
+    .blur-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: none;
+    }
+
+    .game-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      height: 80%;
+      background: #000;
+      border: 3px solid #fff;
+      z-index: 1001;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      animation: popupAppear 0.4s ease forwards;
+    }
+    .game-popup iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      flex: 1;
+    }
+    .close-btn {
+      background: #ff0077;
+      border: none;
+      color: white;
+      font-size: 16px;
+      padding: 8px 12px;
+      cursor: pointer;
+      align-self: flex-end;
+    }
   </style>
 </head>
 <body>
@@ -74,12 +124,18 @@
     <div id="library-list"></div>
   </div>
 
+  <div class="blur-bg" id="blurBg"></div>
+  <div class="game-popup" id="gamePopup">
+    <button class="close-btn" onclick="closePopup()">✖ Close</button>
+    <iframe id="popupFrame"></iframe>
+  </div>
+
   <script>
     const games = [
-      { name: "Basketbros", rarity: "common", link: "basketbros/index.html" },
-      { name: "bitlife", rarity: "common", link: "bitlife/index.html" },
-      { name: "cookie clicker", rarity: "rare", link: "cookie clicker/index.html" },
-      { name: "basketrandom", rarity: "rare", link: "basketrandom/index.html" }
+      { name: "basketbros", rarity: "common", link: "basketbros/index.html" },
+      { name: "basketrandom", rarity: "common", link: "basketrandom/index.html" },
+      { name: "bitlife", rarity: "rare", link: "bitlife/index.html" },
+      { name: "cookieclicker", rarity: "rare", link: "cookie-clicker/index.html" }
     ];
 
     const rarities = {
@@ -101,7 +157,6 @@
       const filtered = games.filter(g => g.rarity === pickedRarity);
       const selected = filtered[Math.floor(Math.random() * filtered.length)];
 
-      // Add to library if not already there
       if (!library.find(g => g.name === selected.name)) {
         library.push(selected);
         updateLibrary();
@@ -110,7 +165,7 @@
       document.querySelector(".result").innerHTML = `
         <div class="result-animation ${selected.rarity}">
           ⭐ You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
-          <a href="${selected.link}" target="_blank">${selected.name}</a>
+          <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
         </div>`;
     }
 
@@ -119,11 +174,30 @@
       list.innerHTML = "";
       library.forEach(g => {
         list.innerHTML += `
-          <div class="game-entry ${g.rarity}">
-            <a href="${g.link}" target="_blank">${g.name}</a> <span class="${g.rarity}">[${g.rarity.toUpperCase()}]</span>
+          <div class="game-entry ${g.rarity}" onclick="openPopup('${g.link}')">
+            ${g.name} <span class="${g.rarity}">[${g.rarity.toUpperCase()}]</span>
           </div>`;
       });
+    }
+
+    function openPopup(link) {
+      const popup = document.getElementById("gamePopup");
+      const frame = document.getElementById("popupFrame");
+      const blur = document.getElementById("blurBg");
+      frame.src = link;
+      popup.style.display = "flex";
+      blur.style.display = "block";
+    }
+
+    function closePopup() {
+      const popup = document.getElementById("gamePopup");
+      const frame = document.getElementById("popupFrame");
+      const blur = document.getElementById("blurBg");
+      frame.src = "";
+      popup.style.display = "none";
+      blur.style.display = "none";
     }
   </script>
 </body>
 </html>
+
