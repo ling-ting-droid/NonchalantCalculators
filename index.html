@@ -173,6 +173,8 @@
     <div id="library-list"></div>
   </div>
 
+  <div class="roast-log" id="roastLog" style="margin-top: 20px; max-width: 600px; text-align: left;"></div>
+
   <div class="blur-bg" id="blurBg"></div>
   <div class="game-popup" id="gamePopup">
     <button class="close-btn" onclick="closePopup()">✖ Close</button>
@@ -192,12 +194,18 @@
     ];
 
     const rarities = { common: 60, rare: 25, epic: 10, legendary: 5 };
-    const trashPunishments = [
-      "beat flappy bird with 30 score or no pulls for 1 min 😭",
-      "play slope for 60 seconds or ur pull privileges gone 💀",
-      "common?? pull again and u catching detention",
-      "draw a legendary in real life and submit to SOL for approval ✍️",
-      "touch grass in 2D or wait 1 min"
+
+    const roastLines = [
+      "that pull was trash. even your mouse cringed.",
+      "bro i could’ve pulled better blindfolded.",
+      "common?? just uninstall.",
+      "the game ain’t even fw u fr.",
+      "that pull was so bad it gave me malware.",
+      "legendary?? more like legendarily mid.",
+      "another day, another L.",
+      "SOL himself cryin rn.",
+      "the gacha gods said nope.",
+      "you really pulled that on school wifi? tragic."
     ];
 
     const library = [];
@@ -206,9 +214,8 @@
     const timerBar = document.getElementById("timer-bar");
     const resultDiv = document.querySelector(".result");
 
-    let cooldown = 3;
+    let cooldown = 30;
     let timerInterval;
-    let punishmentTimer;
 
     function startTimer() {
       let timeLeft = cooldown;
@@ -279,50 +286,19 @@
           updateLibrary();
         }
 
-        if (selected.rarity === "common" && Math.random() < 0.5) {
-          const punishment = trashPunishments[Math.floor(Math.random() * trashPunishments.length)];
-          pullBtn.disabled = true;
-          clearInterval(timerInterval);
+        resultDiv.innerHTML = `
+          <div class="result-animation ${selected.rarity}">
+            🎉 You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
+            <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
+          </div>
+        `;
 
-          resultDiv.innerHTML = `
-            <div class="result-animation common">
-              🤢 Common pull detected... ${selected.name}???<br><br>
-              🔒 <i>${punishment}</i><br><br>
-              <button id="punish-skip-btn" class="button" onclick="skipPunishment()" disabled>Wait...</button>
-            </div>
-          `;
-          startPunishmentTimer(60); // time in seconds
-        } else {
-          resultDiv.innerHTML = `
-            <div class="result-animation ${selected.rarity}">
-              🎉 You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
-              <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
-            </div>
-          `;
-        }
+        // 🔥 roast logs
+        const roast = roastLines[Math.floor(Math.random() * roastLines.length)];
+        const roastLog = document.getElementById("roastLog");
+        roastLog.innerHTML += `<div style="margin-top: 6px; color: #888;">🗑️ ${roast}</div>`;
+
       }, 2000);
-    }
-
-    function startPunishmentTimer(seconds) {
-      const btn = document.getElementById("punish-skip-btn");
-      let timeLeft = seconds;
-      btn.textContent = `Wait ${timeLeft}s...`;
-
-      punishmentTimer = setInterval(() => {
-        timeLeft--;
-        btn.textContent = `Wait ${timeLeft}s...`;
-        if (timeLeft <= 0) {
-          clearInterval(punishmentTimer);
-          btn.disabled = false;
-          btn.textContent = "I Did It 😇";
-        }
-      }, 1000);
-    }
-
-    function skipPunishment() {
-      pullBtn.disabled = false;
-      timerBar.style.width = "100%";
-      resultDiv.innerHTML = `<div class="result-animation">✅ Punishment cleared. Pull again if u dare 😤</div>`;
     }
 
     function updateLibrary() {
