@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>SOL's RNG Game Pull</title>
   <style>
     body {
@@ -31,7 +31,8 @@
       transform: scale(1.05);
     }
 
-    .library, .result {
+    .library,
+    .result {
       margin-top: 20px;
       max-width: 600px;
       width: 100%;
@@ -47,10 +48,22 @@
       cursor: pointer;
     }
 
-    .common { color: #aaa; }
-    .rare { color: #00faff; }
-    .epic { color: #cc00ff; }
-    .legendary { color: #ffc700; font-weight: bold; }
+    .common {
+      color: #aaa;
+    }
+
+    .rare {
+      color: #00faff;
+    }
+
+    .epic {
+      color: #cc00ff;
+    }
+
+    .legendary {
+      color: #ffc700;
+      font-weight: bold;
+    }
 
     .result-animation {
       font-size: 24px;
@@ -61,18 +74,35 @@
     }
 
     @keyframes fadeIn {
-      to { opacity: 1; }
+      to {
+        opacity: 1;
+      }
     }
 
     @keyframes popFade {
-      0% { transform: scale(0.8); opacity: 0; }
-      50% { transform: scale(1.1); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
+      0% {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     @keyframes popupAppear {
-      0% { opacity: 0; transform: translate(-50%, -60%) scale(0.95); }
-      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
     }
 
     .blur-bg {
@@ -147,8 +177,12 @@
     }
 
     @keyframes slotSpin {
-      0% { transform: rotateX(0deg); }
-      100% { transform: rotateX(360deg); }
+      0% {
+        transform: rotateX(0deg);
+      }
+      100% {
+        transform: rotateX(360deg);
+      }
     }
   </style>
 </head>
@@ -156,8 +190,27 @@
   <h1>🎲 SOL's RNG Game Generator 🎮</h1>
   <button class="button" onclick="rollGame()">Pull a Game</button>
 
-  <div id="timer-container" style="width: 100px; height: 12px; background: #222; border-radius: 6px; overflow: hidden; margin: 4px auto 0 auto;">
-    <div id="timer-bar" style="width: 100%; height: 100%; background: #ff0077; transition: width 1s linear;"></div>
+  <div
+    class="roast-log"
+    id="roastLog"
+    style="max-width: 600px; margin-top: 20px; text-align: left; opacity: 0"
+  ></div>
+
+  <div
+    id="timer-container"
+    style="
+      width: 100px;
+      height: 12px;
+      background: #222;
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 10px auto 0 auto;
+    "
+  >
+    <div
+      id="timer-bar"
+      style="width: 100%; height: 100%; background: #ff0077; transition: width 1s linear"
+    ></div>
   </div>
 
   <div class="slot-machine">
@@ -172,8 +225,6 @@
     <h2>Your Library 📚</h2>
     <div id="library-list"></div>
   </div>
-
-  <div class="roast-log" id="roastLog" style="margin-top: 20px; max-width: 600px; text-align: left;"></div>
 
   <div class="blur-bg" id="blurBg"></div>
   <div class="game-popup" id="gamePopup">
@@ -214,7 +265,7 @@
     const timerBar = document.getElementById("timer-bar");
     const resultDiv = document.querySelector(".result");
 
-    let cooldown = 3;
+    let cooldown = 30;
     let timerInterval;
 
     function startTimer() {
@@ -270,7 +321,7 @@
         else if (roll <= rarities.legendary + rarities.epic) pickedRarity = "epic";
         else if (roll <= rarities.legendary + rarities.epic + rarities.rare) pickedRarity = "rare";
 
-        const filtered = games.filter(g => g.rarity === pickedRarity);
+        const filtered = games.filter((g) => g.rarity === pickedRarity);
         const selected = filtered[Math.floor(Math.random() * filtered.length)];
 
         reel1.textContent = selected.name;
@@ -281,7 +332,7 @@
         reel2.classList.add("stop");
         reel3.classList.add("stop");
 
-        if (!library.find(g => g.name === selected.name)) {
+        if (!library.find((g) => g.name === selected.name)) {
           library.push(selected);
           updateLibrary();
         }
@@ -293,18 +344,27 @@
           </div>
         `;
 
-        // 🔥 roast logs
+        // roast logs with fadeIn
         const roast = roastLines[Math.floor(Math.random() * roastLines.length)];
         const roastLog = document.getElementById("roastLog");
-        roastLog.innerHTML += `<div style="margin-top: 6px; color: #888;">🗑️ ${roast}</div>`;
 
+        const roastDiv = document.createElement("div");
+        roastDiv.style.color = "#888";
+        roastDiv.style.marginTop = "6px";
+        roastDiv.style.opacity = "0";
+        roastDiv.classList.add("fadeIn");
+        roastDiv.style.animation = "fadeIn 0.6s ease forwards";
+
+        roastDiv.textContent = `🗑️ ${roast}`;
+
+        roastLog.appendChild(roastDiv);
       }, 2000);
     }
 
     function updateLibrary() {
       const list = document.getElementById("library-list");
       list.innerHTML = "";
-      library.forEach(g => {
+      library.forEach((g) => {
         list.innerHTML += `
           <div class="game-entry ${g.rarity}" onclick="openPopup('${g.link}')">
             ${g.name} <span class="${g.rarity}">[${g.rarity.toUpperCase()}]</span>
