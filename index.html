@@ -118,6 +118,11 @@
   <h1>🎲 SOL's RNG Game Generator 🎮</h1>
   <button class="button" onclick="rollGame()">Pull a Game</button>
 
+<div id="timer-container" style="position: fixed; top: 40px; right: 20px; width: 20px; height: 150px; background: #222; border-radius: 10px; overflow: hidden;">
+  <div id="timer-bar" style="width: 100%; height: 100%; background: #ff0077; transition: height 1s linear;"></div>
+</div>
+
+
   <div class="result"></div>
   <div class="library">
     <h2>Your Library 📚</h2>
@@ -152,26 +157,32 @@
     const library = [];
 
     function rollGame() {
-      const roll = Math.random() * 100;
-      let pickedRarity = "common";
-      if (roll <= rarities.legendary) pickedRarity = "legendary";
-      else if (roll <= rarities.legendary + rarities.epic) pickedRarity = "epic";
-      else if (roll <= rarities.legendary + rarities.epic + rarities.rare) pickedRarity = "rare";
+  if (pullBtn.disabled) return; // prevent clicking if cooldown active
 
-      const filtered = games.filter(g => g.rarity === pickedRarity);
-      const selected = filtered[Math.floor(Math.random() * filtered.length)];
+  // your existing rollGame code here...
+  const roll = Math.random() * 100;
+  let pickedRarity = "common";
+  if (roll <= rarities.legendary) pickedRarity = "legendary";
+  else if (roll <= rarities.legendary + rarities.epic) pickedRarity = "epic";
+  else if (roll <= rarities.legendary + rarities.epic + rarities.rare) pickedRarity = "rare";
 
-      if (!library.find(g => g.name === selected.name)) {
-        library.push(selected);
-        updateLibrary();
-      }
+  const filtered = games.filter(g => g.rarity === pickedRarity);
+  const selected = filtered[Math.floor(Math.random() * filtered.length)];
 
-      document.querySelector(".result").innerHTML = `
-        <div class="result-animation ${selected.rarity}">
-          ⭐ You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
-          <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
-        </div>`;
-    }
+  if (!library.find(g => g.name === selected.name)) {
+    library.push(selected);
+    updateLibrary();
+  }
+
+  document.querySelector(".result").innerHTML = `
+    <div class="result-animation ${selected.rarity}">
+      ⭐ You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
+      <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
+    </div>`;
+
+  startTimer(); // start countdown after a pull
+}
+
 
     function updateLibrary() {
       const list = document.getElementById("library-list");
@@ -201,6 +212,35 @@
       popup.style.display = "none";
       blur.style.display = "none";
     }
+
+    const pullBtn = document.querySelector(".button");
+const timerBar = document.getElementById("timer-bar");
+
+let cooldown = 30; // seconds
+let timerInterval;
+
+function startTimer() {
+  let timeLeft = cooldown;
+  pullBtn.disabled = true;
+  updateTimerBar(timeLeft);
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerBar(timeLeft);
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      pullBtn.disabled = false;
+      timerBar.style.height = "100%"; // reset bar fill
+    }
+  }, 1000);
+}
+
+function updateTimerBar(time) {
+  const percentage = (time / cooldown) * 100;
+  timerBar.style.height = percentage + "%";
+}
+
   </script>
 </body>
 </html>
