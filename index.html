@@ -23,12 +23,43 @@
       font-size: 18px;
       border-radius: 8px;
       cursor: pointer;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       transition: transform 0.2s;
     }
 
-    .button:hover {
+    .button:disabled {
+      background: #88003f;
+      cursor: not-allowed;
+    }
+
+    .button:hover:enabled {
       transform: scale(1.05);
+    }
+
+    .cooldown-bar {
+      width: 100%;
+      max-width: 600px;
+      height: 10px;
+      background: #333;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .cooldown-fill {
+      height: 100%;
+      width: 0%;
+      background: #ff0077;
+      transition: width 0.1s linear;
+    }
+
+    .trash-talk {
+      font-style: italic;
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: #ffb3d9;
+      animation: fadeIn 0.6s ease forwards;
+      min-height: 18px;
     }
 
     .library, .result {
@@ -123,9 +154,12 @@
 </head>
 <body>
   <h1>🎲 SOL's RNG Game Generator 🎮</h1>
-  <button class="button" onclick="rollGame()">Pull a Game</button>
+  <button class="button" id="pullBtn" onclick="rollGame()">Pull a Game</button>
 
+  <div class="cooldown-bar"><div class="cooldown-fill" id="cooldownFill"></div></div>
+  <div class="trash-talk" id="trashTalk"></div>
   <div class="result"></div>
+
   <div class="library">
     <h2>Your Library 📚</h2>
     <div id="library-list"></div>
@@ -139,14 +173,11 @@
 
   <script>
     const games = [
-      { name: "Slope", rarity: "common", link: "slope.html" },
-      { name: "Flappy Bird", rarity: "common", link: "flappy.html" },
-      { name: "Moto X3M", rarity: "rare", link: "moto/index.html" },
-      { name: "1v1.lol", rarity: "rare", link: "1v1.html" },
-      { name: "Subway Surfers", rarity: "epic", link: "subway/game.html" },
-      { name: "Basket Bros", rarity: "epic", link: "basket.html" },
-      { name: "GTA Web", rarity: "legendary", link: "gta/index.html" },
-      { name: "Bloons TD", rarity: "legendary", link: "bloons/index.html" }
+      { name: "basketbros", rarity: "common", link: "basketbros/index.html" },
+      { name: "basketrandom", rarity: "common", link: "basketrandom/index.html" },
+      { name: "eurocup", rarity: "rare", link: "eurocup/index.html" },
+      { name: "OVO", rarity: "rare", link: "OVOfr/index.html" },
+      { name: "cookie clicker", rarity: "epic", link: "cookie-clicker/index.html" }
     ];
 
     const rarities = {
@@ -155,6 +186,19 @@
       epic: 10,
       legendary: 5
     };
+
+    const trashLines = [
+      "bro that was embarrassing 😭",
+      "i wouldn't show that pull to anyone",
+      "L pull 😮‍💨",
+      "maybe next time... or not",
+      "RNG hates u fr",
+      "🤡 clown pull energy",
+      "trash got pulled, again 💀",
+      "gacha gods laughing rn",
+      "better luck in another life",
+      "the common curse lives on"
+    ];
 
     const library = [];
 
@@ -174,11 +218,21 @@
         updateLibrary();
       }
 
+      // result animation
       document.querySelector(".result").innerHTML = `
         <div class="result-animation ${selected.rarity}">
           ⭐ You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
           <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
         </div>`;
+
+      // show random trash talk
+      const trash = trashLines[Math.floor(Math.random() * trashLines.length)];
+      const trashDiv = document.getElementById("trashTalk");
+      trashDiv.textContent = trash;
+      trashDiv.style.opacity = 0;
+      setTimeout(() => { trashDiv.style.opacity = 1; }, 50);
+
+      startCooldown(); // disable btn and start cooldown
     }
 
     function updateLibrary() {
@@ -193,24 +247,35 @@
     }
 
     function openPopup(link) {
-      const popup = document.getElementById("gamePopup");
-      const frame = document.getElementById("popupFrame");
-      const blur = document.getElementById("blurBg");
-      frame.src = link;
-      popup.style.display = "flex";
-      blur.style.display = "block";
+      document.getElementById("popupFrame").src = link;
+      document.getElementById("gamePopup").style.display = "flex";
+      document.getElementById("blurBg").style.display = "block";
     }
 
     function closePopup() {
-      const popup = document.getElementById("gamePopup");
-      const frame = document.getElementById("popupFrame");
-      const blur = document.getElementById("blurBg");
-      frame.src = "";
-      popup.style.display = "none";
-      blur.style.display = "none";
+      document.getElementById("popupFrame").src = "";
+      document.getElementById("gamePopup").style.display = "none";
+      document.getElementById("blurBg").style.display = "none";
     }
 
-    // 🧠 load saved library from localStorage on page load
+    function startCooldown() {
+      const btn = document.getElementById("pullBtn");
+      const fill = document.getElementById("cooldownFill");
+      btn.disabled = true;
+      let time = 3; // seconds
+      let elapsed = 0;
+      const interval = setInterval(() => {
+        elapsed += 0.1;
+        fill.style.width = `${(elapsed / time) * 100}%`;
+        if (elapsed >= time) {
+          clearInterval(interval);
+          btn.disabled = false;
+          fill.style.width = "0%";
+        }
+      }, 100);
+    }
+
+    // load from localStorage on start
     window.onload = () => {
       const saved = localStorage.getItem("solGameLibrary");
       if (saved) {
@@ -222,4 +287,3 @@
   </script>
 </body>
 </html>
-
