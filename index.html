@@ -274,7 +274,24 @@
       const div = document.createElement("div");
       div.className = `shelf-card ${game.rarity}`;
       div.innerHTML = `${game.name}<br><span>[${game.rarity.toUpperCase()}]</span>`;
-      div.onclick = () => div.classList.toggle("selected");
+      let clickTimeout = null;
+
+div.onclick = (e) => {
+  if (clickTimeout !== null) {
+    clearTimeout(clickTimeout);
+    clickTimeout = null;
+    // double click detected
+    openPopup(div.dataset.link);
+  } else {
+    clickTimeout = setTimeout(() => {
+      div.classList.toggle("selected");
+      clickTimeout = null;
+    }, 250);
+  }
+};
+
+div.dataset.link = game.link; // store link for popup
+
       lastRow.appendChild(div);
     }
 
