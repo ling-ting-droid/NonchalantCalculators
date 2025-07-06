@@ -56,26 +56,35 @@
     .trash-talk {
       font-style: italic;
       font-size: 14px;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
       color: #ffb3d9;
       animation: fadeIn 0.6s ease forwards;
       min-height: 18px;
     }
 
-    .library, .result {
-      margin-top: 20px;
-      max-width: 600px;
-      width: 100%;
+    .game-shelf {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 30px;
+      max-width: 800px;
     }
 
-    .game-entry {
+    .shelf-card {
       background: #222;
-      padding: 10px 15px;
-      border-radius: 6px;
-      margin: 8px 0;
-      opacity: 0;
-      animation: fadeIn 0.6s ease forwards;
+      border: 2px solid #444;
+      border-radius: 10px;
+      padding: 10px 14px;
+      min-width: 100px;
+      text-align: center;
       cursor: pointer;
+      animation: fadeIn 0.6s ease forwards;
+      transition: transform 0.2s ease;
+    }
+
+    .shelf-card:hover {
+      transform: scale(1.05);
     }
 
     .common { color: #aaa; }
@@ -153,17 +162,15 @@
   </style>
 </head>
 <body>
-  <h1>🎲 gambling addicts 🎮</h1>
+  <h1>🎲 pull some games 🎮</h1>
   <button class="button" id="pullBtn" onclick="rollGame()">Pull a Game</button>
 
   <div class="cooldown-bar"><div class="cooldown-fill" id="cooldownFill"></div></div>
   <div class="trash-talk" id="trashTalk"></div>
   <div class="result"></div>
 
-  <div class="library">
-    <h2>Your Library 📚</h2>
-    <div id="library-list"></div>
-  </div>
+  <h2>Your Game Shelf 🕹️</h2>
+  <div class="game-shelf" id="gameShelf"></div>
 
   <div class="blur-bg" id="blurBg"></div>
   <div class="game-popup" id="gamePopup">
@@ -173,12 +180,14 @@
 
   <script>
     const games = [
-      { name: "basketbros", rarity: "common", link: "basketbros/index.html" },
-      { name: "basketrandom", rarity: "common", link: "basketrandom/index.html" },
-      { name: "eurocup", rarity: "rare", link: "eurocup/index.html" },
-      { name: "OVO", rarity: "rare", link: "OVOfr/index.html" },
-      { name: "cookie clicker", rarity: "epic", link: "cookie-clicker/index.html" },
-      { name: "bitlife", rarity: "rare", link: "bitlife/index.html" }
+      { name: "Breakoid", rarity: "common", link: "breakoid/index.html" },
+      { name: "Edge Surf", rarity: "common", link: "edgesurf/index/html" },
+      { name: "Tanuki Sunset", rarity: "rare", link: "tanukisunset/index.html" },
+      { name: "Basket Random", rarity: "rare", link: "basketrandom/index.html" },
+      { name: "Bitlife", rarity: "epic", link: "bitlife/index.html" },
+      { name: "Basket Bros", rarity: "epic", link: "basketbros/index.html" },
+      { name: "Cookie Clicker", rarity: "legendary", link: "cookie-clicker/index.html" },
+      { name: "OVO", rarity: "legendary", link: "OVOfr/index.html" }
     ];
 
     const rarities = {
@@ -190,15 +199,15 @@
 
     const trashLines = [
       "yes king",
-      "too good",
-      "my guy",
-      "what a pull",
-      "the game might be back",
-      "99 percent of gamblers quit before their big win yk",
-      "lock in",
       "stay up",
-      "commons, rares, epics it's all gambling",
-      "stay on the grind bbg"
+      "keep pulling",
+      "the odds are always against u but you've got your kids college fund",
+      "pulling is better than algebra",
+      "99% of gamblers quit before the jackpot",
+      "lock in",
+      "we might be back",
+      "what a pull",
+      "stay on the grind"
     ];
 
     const library = [];
@@ -216,35 +225,31 @@
       if (!library.find(g => g.name === selected.name)) {
         library.push(selected);
         localStorage.setItem("solGameLibrary", JSON.stringify(library));
-        updateLibrary();
+        addToShelf(selected);
       }
 
-      // result animation
       document.querySelector(".result").innerHTML = `
         <div class="result-animation ${selected.rarity}">
           ⭐ You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
           <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
         </div>`;
 
-      // show random trash talk
       const trash = trashLines[Math.floor(Math.random() * trashLines.length)];
       const trashDiv = document.getElementById("trashTalk");
       trashDiv.textContent = trash;
       trashDiv.style.opacity = 0;
       setTimeout(() => { trashDiv.style.opacity = 1; }, 50);
 
-      startCooldown(); // disable btn and start cooldown
+      startCooldown();
     }
 
-    function updateLibrary() {
-      const list = document.getElementById("library-list");
-      list.innerHTML = "";
-      library.forEach(g => {
-        list.innerHTML += `
-          <div class="game-entry ${g.rarity}" onclick="openPopup('${g.link}')">
-            ${g.name} <span class="${g.rarity}">[${g.rarity.toUpperCase()}]</span>
-          </div>`;
-      });
+    function addToShelf(game) {
+      const shelf = document.getElementById("gameShelf");
+      const div = document.createElement("div");
+      div.className = `shelf-card ${game.rarity}`;
+      div.innerHTML = `${game.name}<br><span>[${game.rarity.toUpperCase()}]</span>`;
+      div.onclick = () => openPopup(game.link);
+      shelf.appendChild(div);
     }
 
     function openPopup(link) {
@@ -263,7 +268,7 @@
       const btn = document.getElementById("pullBtn");
       const fill = document.getElementById("cooldownFill");
       btn.disabled = true;
-      let time = 3; // seconds
+      let time = 3;
       let elapsed = 0;
       const interval = setInterval(() => {
         elapsed += 0.1;
@@ -276,13 +281,14 @@
       }, 100);
     }
 
-    // load from localStorage on start
     window.onload = () => {
       const saved = localStorage.getItem("solGameLibrary");
       if (saved) {
         const parsed = JSON.parse(saved);
-        parsed.forEach(g => library.push(g));
-        updateLibrary();
+        parsed.forEach(g => {
+          library.push(g);
+          addToShelf(g);
+        });
       }
     };
   </script>
