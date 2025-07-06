@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SOL's RNG Game Pull</title>
+  <title>crazy cals</title>
   <style>
     body {
       background: #111;
@@ -15,7 +15,7 @@
       position: relative;
     }
 
-    .button {
+    .button, .gamble-btn {
       background: #ff0077;
       color: white;
       border: none;
@@ -27,12 +27,12 @@
       transition: transform 0.2s;
     }
 
-    .button:disabled {
+    .button:disabled, .gamble-btn:disabled {
       background: #88003f;
       cursor: not-allowed;
     }
 
-    .button:hover:enabled {
+    .button:hover:enabled, .gamble-btn:hover:enabled {
       transform: scale(1.05);
     }
 
@@ -93,6 +93,11 @@
       cursor: pointer;
       animation: fadeIn 0.4s ease forwards;
       transition: transform 0.2s ease;
+    }
+
+    .shelf-card.selected {
+      border-color: #ff0077;
+      box-shadow: 0 0 10px #ff0077;
     }
 
     .shelf-card:hover {
@@ -174,11 +179,12 @@
   </style>
 </head>
 <body>
-  <h1>🎲 pull games 🎮</h1>
+  <h1>🎲 pull them games 🎮</h1>
   <button class="button" id="pullBtn" onclick="rollGame()">Pull a Game</button>
   <div class="cooldown-bar"><div class="cooldown-fill" id="cooldownFill"></div></div>
   <div class="trash-talk" id="trashTalk"></div>
   <div class="result"></div>
+  <button class="gamble-btn" onclick="gambleGames()">🎰 Gamble for Upgrade</button>
   <h2>Your Game Shelf 🕹️</h2>
   <div class="game-shelf" id="gameShelf"></div>
 
@@ -192,42 +198,43 @@
     const games = [
       { name: "Breakoid", rarity: "common", link: "breakoid/index.html" },
       { name: "Edge Surf", rarity: "common", link: "edgesurf/index.html" },
-      { name: "Basket Random", rarity: "rare", link: "basketrandom/index.html" },
       { name: "Drive Mad", rarity: "rare", link: "drivemad/index.html" },
+      { name: "Basket Random", rarity: "rare", link: "basketrandom/index.html" },
       { name: "Euro Cup", rarity: "epic", link: "eurocup/index.html" },
       { name: "Basket Bros", rarity: "epic", link: "basketbors/index.html" },
       { name: "OVO", rarity: "legendary", link: "OVOfr/index.html" },
       { name: "Cookie Clicker", rarity: "legendary", link: "cookie-clicker/index.html" }
     ];
 
-    const rarities = {
-      common: 60,
-      rare: 25,
-      epic: 10,
-      legendary: 5
-    };
-
-    const trashLines = [
-      "stay up king",
-      "alr alr",
-      "we might be up",
-      "keep calm and pull on",
-      "gambling is basically maths",
-      "lock in",
-      "don't slip up now",
-      "what is this luck",
-      "99% of gamblers quit before their big win",
-      "stay on the grind bbg"
-    ];
-
+    const rarities = { common: 60, rare: 25, epic: 10, legendary: 5 };
+    const rarityScore = { common: 1, rare: 2, epic: 4, legendary: 8 };
     const library = [];
 
-    function rollGame() {
-      const roll = Math.random() * 100;
+    const trashLines = [
+      "bro that was embarrassing 😭",
+      "i wouldn't show that pull to anyone",
+      "L pull 😮‍💨",
+      "maybe next time... or not",
+      "RNG hates u fr",
+      "🤡 clown pull energy",
+      "trash got pulled, again 💀",
+      "gacha gods laughing rn",
+      "better luck in another life",
+      "the common curse lives on"
+    ];
+
+    function rollGame(boost = 0) {
+      let roll = Math.random() * 100;
       let pickedRarity = "common";
-      if (roll <= rarities.legendary) pickedRarity = "legendary";
-      else if (roll <= rarities.legendary + rarities.epic) pickedRarity = "epic";
-      else if (roll <= rarities.legendary + rarities.epic + rarities.rare) pickedRarity = "rare";
+      let thresholds = {
+        legendary: rarities.legendary + boost,
+        epic: rarities.epic + boost,
+        rare: rarities.rare + boost
+      };
+
+      if (roll <= thresholds.legendary) pickedRarity = "legendary";
+      else if (roll <= thresholds.legendary + thresholds.epic) pickedRarity = "epic";
+      else if (roll <= thresholds.legendary + thresholds.epic + thresholds.rare) pickedRarity = "rare";
 
       const filtered = games.filter(g => g.rarity === pickedRarity);
       const selected = filtered[Math.floor(Math.random() * filtered.length)];
@@ -267,8 +274,30 @@
       const div = document.createElement("div");
       div.className = `shelf-card ${game.rarity}`;
       div.innerHTML = `${game.name}<br><span>[${game.rarity.toUpperCase()}]</span>`;
-      div.onclick = () => openPopup(game.link);
+      div.onclick = () => div.classList.toggle("selected");
       lastRow.appendChild(div);
+    }
+
+    function gambleGames() {
+      const selected = document.querySelectorAll(".shelf-card.selected");
+      if (selected.length === 0) return alert("Pick at least 1 game to offer!");
+
+      let boost = 0;
+      selected.forEach(card => {
+        const text = card.textContent;
+        const rarity = text.includes("LEGENDARY") ? "legendary" : text.includes("EPIC") ? "epic" : text.includes("RARE") ? "rare" : "common";
+        boost += rarityScore[rarity];
+        card.remove();
+      });
+
+      selected.forEach(card => {
+        const name = card.textContent.split("[")[0].trim();
+        const index = library.findIndex(g => g.name === name);
+        if (index !== -1) library.splice(index, 1);
+      });
+
+      localStorage.setItem("solGameLibrary", JSON.stringify(library));
+      rollGame(boost * 1.5);
     }
 
     function openPopup(link) {
@@ -287,7 +316,7 @@
       const btn = document.getElementById("pullBtn");
       const fill = document.getElementById("cooldownFill");
       btn.disabled = true;
-      let time = 3;
+      let time = 2;
       let elapsed = 0;
       const interval = setInterval(() => {
         elapsed += 0.1;
