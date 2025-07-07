@@ -163,6 +163,11 @@
     <div class="dropzone"></div>
   </div>
 
+  <div class="screen">
+  <img id="screenPreview" src="insert.png" style="width: 32px; height: 32px;">
+</div>
+
+
   <div class="library">
     <h2>Your Library 📚</h2>
     <div id="library-list" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
@@ -289,6 +294,14 @@
         }
       }, 30);
     }
+
+    function handleDrop(e) {
+  e.preventDefault();
+  const link = e.dataTransfer.getData("text/plain");
+  document.getElementById("screenPreview").style.display = "none"; // hide insert
+  openFullscreen(link);
+}
+
 
     updateLibrary();
   </script>
