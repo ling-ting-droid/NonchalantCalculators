@@ -104,25 +104,42 @@
       justify-content: center;
       color: lime;
       font-family: monospace;
+      overflow: hidden;
+      position: relative;
     }
     .dropzone {
-      width: 100px;
+      width: 120px;
       height: 20px;
-      background: rgba(0,0,0,0.5);
-      border: 2px dashed #fff;
-      margin: 0 auto;
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 2px dashed transparent;
+    }
+    .dropzone:hover {
+      border-color: #fff;
     }
     #fullscreenGame {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
       background: black;
       z-index: 1002;
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 12px;
+      transform: translate(-50%, -50%) scale(0);
+      transition: all 0.5s ease-in-out;
+      overflow: hidden;
+    }
+    #fullscreenGame.show {
+      width: 100vw;
+      height: 100vh;
+      transform: translate(-50%, -50%) scale(1);
+      border-radius: 0;
     }
     #fullscreenGame iframe {
       width: 100%;
@@ -142,7 +159,7 @@
   <div class="result"></div>
 
   <div class="gameboy" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
-    <div class="screen"><span id="screenText">🔲</span></div>
+    <div class="screen"><span id="screenText"></span></div>
     <div class="dropzone"></div>
   </div>
 
@@ -245,8 +262,18 @@
       const full = document.getElementById("fullscreenGame");
       const frame = document.getElementById("fullscreenFrame");
       frame.src = link;
+      full.classList.add("show");
       full.style.display = "flex";
-      full.style.animation = "fadeIn 0.4s ease forwards";
+    }
+
+    function closeFullscreen() {
+      const full = document.getElementById("fullscreenGame");
+      const frame = document.getElementById("fullscreenFrame");
+      full.classList.remove("show");
+      setTimeout(() => {
+        frame.src = "";
+        full.style.display = "none";
+      }, 500);
     }
 
     function startCooldown() {
