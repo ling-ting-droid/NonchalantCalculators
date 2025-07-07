@@ -13,6 +13,7 @@
       align-items: center;
       padding: 40px;
       position: relative;
+      overflow-x: hidden;
     }
     .button {
       background: #ff0077;
@@ -58,95 +59,38 @@
     .result {
       margin-bottom: 30px;
     }
-    .game-entry {
-      background: #222;
-      padding: 10px 15px;
+    .cartridge-entry {
+      width: 120px;
+      height: 60px;
+      background: #333;
+      border: 2px solid #fff;
       border-radius: 6px;
-      margin: 8px 0;
-      opacity: 0;
-      animation: fadeIn 0.6s ease forwards;
-      cursor: pointer;
-    }
-    .common { color: #aaa; }
-    .rare { color: #00faff; }
-    .epic { color: #cc00ff; }
-    .legendary { color: #ffc700; font-weight: bold; }
-
-    .result-animation {
-      font-size: 24px;
-      font-weight: bold;
-      text-align: center;
-      margin-top: 20px;
-      animation: popFade 0.6s ease;
-    }
-
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-
-    @keyframes popFade {
-      0% { transform: scale(0.8); opacity: 0; }
-      50% { transform: scale(1.1); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes popupAppear {
-      0% { opacity: 0; transform: translate(-50%, -60%) scale(0.95); }
-      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    }
-
-    .blur-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      backdrop-filter: blur(10px);
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 1000;
-      display: none;
-    }
-
-    .game-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      height: 80%;
-      background: #000;
-      border: 3px solid #fff;
-      z-index: 1001;
-      display: none;
-      flex-direction: column;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-      animation: popupAppear 0.4s ease forwards;
-    }
-    .game-popup iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      flex: 1;
-    }
-    .close-btn {
-      background: #ff0077;
-      border: none;
       color: white;
-      font-size: 16px;
-      padding: 8px 12px;
-      cursor: pointer;
-      align-self: flex-end;
+      text-align: center;
+      line-height: 60px;
+      font-size: 14px;
+      margin: 10px;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.3s;
     }
+    .cartridge-entry:active {
+      cursor: grabbing;
+    }
+    .common { box-shadow: 0 0 5px #aaa; }
+    .rare { box-shadow: 0 0 10px #00faff; }
+    .epic { box-shadow: 0 0 12px #cc00ff; }
+    .legendary { box-shadow: 0 0 15px #ffc700; }
+
     .gameboy {
       width: 220px;
       height: 320px;
-      background: linear-gradient(145deg, #2f2f2f, #1a1a1a);
+      background: #222 url('https://i.imgur.com/sfcsMWR.png') no-repeat center/cover;
       border: 6px solid #999;
       border-radius: 20px;
       padding: 20px;
       position: relative;
       margin-top: 20px;
-      box-shadow: 0 0 30px rgba(0,255,255,0.2);
       z-index: 0;
     }
     .screen {
@@ -161,37 +105,32 @@
       color: lime;
       font-family: monospace;
     }
-    .slot {
+    .dropzone {
       width: 100px;
-      height: 10px;
-      background: #000;
+      height: 20px;
+      background: rgba(0,0,0,0.5);
+      border: 2px dashed #fff;
       margin: 0 auto;
-      border-radius: 2px;
     }
-    .cartridge {
-      width: 90px;
-      height: 45px;
-      background: #666;
-      border: 2px solid #fff;
-      border-radius: 6px;
-      text-align: center;
-      line-height: 45px;
-      color: white;
-      position: absolute;
-      top: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      animation: dropIn 0.7s forwards;
-      z-index: -1;
+    #fullscreenGame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      z-index: 1002;
+      display: none;
+      align-items: center;
+      justify-content: center;
     }
-    .common { box-shadow: 0 0 5px #aaa; }
-    .rare { box-shadow: 0 0 10px #00faff; }
-    .epic { box-shadow: 0 0 12px #cc00ff; }
-    .legendary { box-shadow: 0 0 15px #ffc700; }
-
-    @keyframes dropIn {
-      0% { top: -60px; }
-      100% { top: 160px; }
+    #fullscreenGame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
     }
   </style>
 </head>
@@ -201,21 +140,19 @@
   <div class="cooldown-bar"><div id="cooldownFill" class="cooldown-fill"></div></div>
   <div class="trash-talk" id="trashTalk">let’s see how mid u really are...</div>
   <div class="result"></div>
-  <div class="gameboy">
-    <div class="screen">
-      <div id="screenText">🔲</div>
-    </div>
-    <div class="slot"></div>
+
+  <div class="gameboy" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+    <div class="screen"><span id="screenText">🔲</span></div>
+    <div class="dropzone"></div>
   </div>
+
   <div class="library">
     <h2>Your Library 📚</h2>
-    <div id="library-list"></div>
+    <div id="library-list" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
   </div>
-  <div class="blur-bg" id="blurBg"></div>
-  <div class="game-popup" id="gamePopup">
-    <button class="close-btn" onclick="closePopup()">✖ Close</button>
-    <iframe id="popupFrame"></iframe>
-  </div>
+
+  <div id="fullscreenGame"><iframe id="fullscreenFrame"></iframe></div>
+
   <script>
     const games = [
       { name: "Slope", rarity: "common", link: "slope.html" },
@@ -245,6 +182,7 @@
 
     let library = JSON.parse(localStorage.getItem("sol_library")) || [];
     let cooldown = false;
+    let lastGame = null;
 
     function rollGame() {
       if (cooldown) return;
@@ -260,18 +198,18 @@
       const filtered = games.filter(g => g.rarity === pickedRarity);
       const selected = filtered[Math.floor(Math.random() * filtered.length)];
 
+      lastGame = selected;
+
       if (!library.find(g => g.name === selected.name)) {
         library.push(selected);
         localStorage.setItem("sol_library", JSON.stringify(library));
         updateLibrary();
       }
 
-      animateCartridgePull(selected);
-
       document.querySelector(".result").innerHTML = `
         <div class="result-animation ${selected.rarity}">
           ⭐ You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
-          <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
+          <span class="cartridge-entry ${selected.rarity}">${selected.name}</span>
         </div>`;
 
       const trash = trashLines[Math.floor(Math.random() * trashLines.length)];
@@ -281,65 +219,34 @@
       setTimeout(() => trashDiv.style.opacity = 1, 100);
     }
 
-    function animateCartridgePull(game) {
-      const gameboy = document.querySelector('.gameboy');
-      const cart = document.createElement('div');
-      cart.className = 'cartridge ' + game.rarity;
-      cart.textContent = game.name;
-      gameboy.appendChild(cart);
-
-      const screen = document.getElementById('screenText');
-      screen.textContent = game.rarity.toUpperCase() + ' PULL';
-
-      setTimeout(() => {
-        cart.remove();
-        screen.textContent = '🔲';
-      }, 2500);
-    }
-
     function updateLibrary() {
       const list = document.getElementById("library-list");
       list.innerHTML = "";
-      library.forEach(g => {
+      library.forEach((g, i) => {
         const div = document.createElement('div');
-        div.className = `game-entry ${g.rarity}`;
-        div.textContent = `${g.name} [${g.rarity.toUpperCase()}]`;
+        div.className = `cartridge-entry ${g.rarity}`;
+        div.textContent = g.name;
+        div.setAttribute('draggable', true);
         div.dataset.link = g.link;
-
-        let clickTimeout = null;
-        div.onclick = () => {
-          if (clickTimeout !== null) {
-            clearTimeout(clickTimeout);
-            clickTimeout = null;
-            openPopup(div.dataset.link);
-          } else {
-            clickTimeout = setTimeout(() => {
-              div.classList.toggle("selected");
-              clickTimeout = null;
-            }, 250);
-          }
+        div.ondragstart = (e) => {
+          e.dataTransfer.setData("text/plain", g.link);
         };
-
         list.appendChild(div);
       });
     }
 
-    function openPopup(link) {
-      const popup = document.getElementById("gamePopup");
-      const frame = document.getElementById("popupFrame");
-      const blur = document.getElementById("blurBg");
-      frame.src = link;
-      popup.style.display = "flex";
-      blur.style.display = "block";
+    function handleDrop(e) {
+      e.preventDefault();
+      const link = e.dataTransfer.getData("text/plain");
+      openFullscreen(link);
     }
 
-    function closePopup() {
-      const popup = document.getElementById("gamePopup");
-      const frame = document.getElementById("popupFrame");
-      const blur = document.getElementById("blurBg");
-      frame.src = "";
-      popup.style.display = "none";
-      blur.style.display = "none";
+    function openFullscreen(link) {
+      const full = document.getElementById("fullscreenGame");
+      const frame = document.getElementById("fullscreenFrame");
+      frame.src = link;
+      full.style.display = "flex";
+      full.style.animation = "fadeIn 0.4s ease forwards";
     }
 
     function startCooldown() {
@@ -356,7 +263,6 @@
       }, 30);
     }
 
-    // Load saved library
     updateLibrary();
   </script>
 </body>
