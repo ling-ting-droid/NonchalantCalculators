@@ -62,6 +62,42 @@
       min-height: 18px;
     }
 
+    .result-card {
+      position: relative;
+      width: 240px;
+      height: 320px;
+      background: #222;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      animation: revealCard 1s ease;
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    }
+
+    .card-shimmer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes revealCard {
+      0% { transform: scale(0.8); opacity: 0; }
+      50% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
     .game-shelf {
       display: flex;
       flex-direction: column;
@@ -108,29 +144,6 @@
     .rare { color: #00faff; }
     .epic { color: #cc00ff; }
     .legendary { color: #ffc700; font-weight: bold; }
-
-    .result-animation {
-      font-size: 24px;
-      font-weight: bold;
-      text-align: center;
-      margin-top: 5px;
-      animation: popFade 0.6s ease;
-    }
-
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-
-    @keyframes popFade {
-      0% { transform: scale(0.8); opacity: 0; }
-      50% { transform: scale(1.1); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes popupAppear {
-      0% { opacity: 0; transform: translate(-50%, -60%) scale(0.95); }
-      100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-    }
 
     .blur-bg {
       position: fixed;
@@ -183,7 +196,7 @@
   <button class="button" id="pullBtn" onclick="rollGame()">Pull a Game</button>
   <div class="cooldown-bar"><div class="cooldown-fill" id="cooldownFill"></div></div>
   <div class="trash-talk" id="trashTalk"></div>
-  <div class="result"></div>
+  <div class="result" id="result"></div>
   <button class="gamble-btn" onclick="gambleGames()">🎰 Gamble for Upgrade</button>
   <h2>Your Game Shelf 🕹️</h2>
   <div class="game-shelf" id="gameShelf"></div>
@@ -245,10 +258,12 @@
         addToShelf(selected);
       }
 
-      document.querySelector(".result").innerHTML = `
-        <div class="result-animation ${selected.rarity}">
-          ⭐ You pulled a <span class="${selected.rarity}">${selected.rarity.toUpperCase()}</span>:
-          <span class="game-entry ${selected.rarity}" onclick="openPopup('${selected.link}')">${selected.name}</span>
+      const result = document.getElementById("result");
+      result.innerHTML = `
+        <div class="result-card ${selected.rarity}">
+          <div class="card-shimmer"></div>
+          <div><strong>${selected.name}</strong></div>
+          <div>[${selected.rarity.toUpperCase()}]</div>
         </div>`;
 
       const trash = trashLines[Math.floor(Math.random() * trashLines.length)];
