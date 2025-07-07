@@ -81,18 +81,17 @@
     .card-shimmer {
       position: absolute;
       top: 0;
-      left: -75%;
-      width: 50%;
+      left: 0;
+      width: 100%;
       height: 100%;
-      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
-      transform: skewX(-20deg);
-      animation: shimmer 1s ease-out forwards;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shimmer 1.2s ease-out forwards;
       pointer-events: none;
     }
 
     @keyframes shimmer {
-      0% { left: -75%; }
-      100% { left: 125%; }
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
     @keyframes revealCard {
@@ -132,6 +131,19 @@
       cursor: pointer;
       animation: fadeIn 0.4s ease forwards;
       transition: transform 0.2s ease;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .shelf-card .card-shimmer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shimmer 1.2s ease-out forwards;
+      pointer-events: none;
     }
 
     .shelf-card.selected {
@@ -261,28 +273,15 @@
         addToShelf(selected);
       }
 
+      const shimmer = '<div class="card-shimmer"></div>';
+
       const result = document.getElementById("result");
-      result.innerHTML = "";
-
-      const card = document.createElement("div");
-      card.className = `result-card ${selected.rarity}`;
-
-      if (Math.random() < 0.25) {
-        const shimmer = document.createElement("div");
-        shimmer.className = "card-shimmer";
-        card.appendChild(shimmer);
-      }
-
-      const title = document.createElement("div");
-      title.innerHTML = `<strong>${selected.name}</strong>`;
-
-      const tier = document.createElement("div");
-      tier.textContent = `[${selected.rarity.toUpperCase()}]`;
-
-      card.appendChild(title);
-      card.appendChild(tier);
-
-      result.appendChild(card);
+      result.innerHTML = `
+        <div class="result-card ${selected.rarity}">
+          ${shimmer}
+          <div><strong>${selected.name}</strong></div>
+          <div>[${selected.rarity.toUpperCase()}]</div>
+        </div>`;
 
       const trash = trashLines[Math.floor(Math.random() * trashLines.length)];
       const trashDiv = document.getElementById("trashTalk");
@@ -293,7 +292,85 @@
       startCooldown();
     }
 
-    // ... rest unchanged ...
+    function addToShelf(game) {
+      const shelf = document.getElementById("gameShelf");
+      let rows = shelf.querySelectorAll(".shelf-row");
+      let lastRow = rows[rows.length - 1];
+
+      if (!lastRow || lastRow.children.length >= 5) {
+        lastRow = document.createElement("div");
+        lastRow.className = "shelf-row";
+        shelf.appendChild(lastRow);
+      }
+
+      const div = document.createElement("div");
+      div.className = `shelf-card ${game.rarity}`;
+      div.innerHTML = `${game.name}<br><span>[${game.rarity.toUpperCase()}]</span><div class="card-shimmer"></div>`;
+      div.onclick = () => div.classList.toggle("selected");
+      lastRow.appendChild(div);
+    }
+
+    function gambleGames() {
+      const selected = document.querySelectorAll(".shelf-card.selected");
+      if (selected.length === 0) return alert("Pick at least 1 game to offer!");
+
+      let boost = 0;
+      selected.forEach(card => {
+        const text = card.textContent;
+        const rarity = text.includes("LEGENDARY") ? "legendary" : text.includes("EPIC") ? "epic" : text.includes("RARE") ? "rare" : "common";
+        boost += rarityScore[rarity];
+        card.remove();
+      });
+
+      selected.forEach(card => {
+        const name = card.textContent.split("[")[0].trim();
+        const index = library.findIndex(g => g.name === name);
+        if (index !== -1) library.splice(index, 1);
+      });
+
+      localStorage.setItem("solGameLibrary", JSON.stringify(library));
+      rollGame(boost * 1.5);
+    }
+
+    function openPopup(link) {
+      document.getElementById("popupFrame").src = link;
+      document.getElementById("gamePopup").style.display = "flex";
+      document.getElementById("blurBg").style.display = "block";
+    }
+
+    function closePopup() {
+      document.getElementById("popupFrame").src = "";
+      document.getElementById("gamePopup").style.display = "none";
+      document.getElementById("blurBg").style.display = "none";
+    }
+
+    function startCooldown() {
+      const btn = document.getElementById("pullBtn");
+      const fill = document.getElementById("cooldownFill");
+      btn.disabled = true;
+      let time = 3;
+      let elapsed = 0;
+      const interval = setInterval(() => {
+        elapsed += 0.1;
+        fill.style.width = `${(elapsed / time) * 100}%`;
+        if (elapsed >= time) {
+          clearInterval(interval);
+          btn.disabled = false;
+          fill.style.width = "0%";
+        }
+      }, 100);
+    }
+
+    window.onload = () => {
+      const saved = localStorage.getItem("solGameLibrary");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        parsed.forEach(g => {
+          library.push(g);
+          addToShelf(g);
+        });
+      }
+    };
   </script>
 </body>
 </html>
