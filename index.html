@@ -202,6 +202,168 @@
   </style>
 </head>
 <body>
-  <!-- rest of the HTML stays unchanged -->
+    <h1>🎲 SOL's RNG Game Generator 🎮</h1>
+  <button class="button" id="pullBtn" onclick="rollGame()">Pull a Game</button>
+  <div class="cooldown-bar"><div class="cooldown-fill" id="cooldownFill"></div></div>
+  <div class="trash-talk" id="trashTalk"></div>
+  <div class="result" id="result"></div>
+  <button class="gamble-btn" onclick="gambleGames()">🎰 Gamble for Upgrade</button>
+  <h2>Your Game Shelf 🕹️</h2>
+  <div class="game-shelf" id="gameShelf"></div>
+
+  <div class="blur-bg" id="blurBg"></div>
+  <div class="game-popup" id="gamePopup">
+    <button class="close-btn" onclick="closePopup()">✖ Close</button>
+    <iframe id="popupFrame"></iframe>
+  </div>
+
+  <script>
+    const games = [
+      { name: "Slope", rarity: "common", link: "slope.html" },
+      { name: "Flappy Bird", rarity: "common", link: "flappy.html" },
+      { name: "Moto X3M", rarity: "rare", link: "moto/index.html" },
+      { name: "1v1.lol", rarity: "rare", link: "1v1.html" },
+      { name: "Subway Surfers", rarity: "epic", link: "subway/game.html" },
+      { name: "Basket Bros", rarity: "epic", link: "basket.html" },
+      { name: "GTA Web", rarity: "legendary", link: "gta/index.html" },
+      { name: "Bloons TD", rarity: "legendary", link: "bloons/index.html" }
+    ];
+
+    const rarities = { common: 60, rare: 25, epic: 10, legendary: 5 };
+    const rarityScore = { common: 1, rare: 2, epic: 4, legendary: 8 };
+    const library = [];
+
+    const trashLines = [
+      "bro that was embarrassing 😭",
+      "i wouldn't show that pull to anyone",
+      "L pull 😮‍💨",
+      "maybe next time... or not",
+      "RNG hates u fr",
+      "🤡 clown pull energy",
+      "trash got pulled, again 💀",
+      "gacha gods laughing rn",
+      "better luck in another life",
+      "the common curse lives on"
+    ];
+
+    function rollGame(boost = 0) {
+      let roll = Math.random() * 100;
+      let pickedRarity = "common";
+      let thresholds = {
+        legendary: rarities.legendary + boost,
+        epic: rarities.epic + boost,
+        rare: rarities.rare + boost
+      };
+
+      if (roll <= thresholds.legendary) pickedRarity = "legendary";
+      else if (roll <= thresholds.legendary + thresholds.epic) pickedRarity = "epic";
+      else if (roll <= thresholds.legendary + thresholds.epic + thresholds.rare) pickedRarity = "rare";
+
+      const filtered = games.filter(g => g.rarity === pickedRarity);
+      const selected = filtered[Math.floor(Math.random() * filtered.length)];
+
+      if (!library.find(g => g.name === selected.name)) {
+        library.push(selected);
+        localStorage.setItem("solGameLibrary", JSON.stringify(library));
+        addToShelf(selected);
+      }
+
+      const result = document.getElementById("result");
+      result.innerHTML = 
+        <div class="result-card ${selected.rarity}">
+          <div class="card-shimmer"></div>
+          <div><strong>${selected.name}</strong></div>
+          <div>[${selected.rarity.toUpperCase()}]</div>
+        </div>;
+
+      const trash = trashLines[Math.floor(Math.random() * trashLines.length)];
+      const trashDiv = document.getElementById("trashTalk");
+      trashDiv.textContent = trash;
+      trashDiv.style.opacity = 0;
+      setTimeout(() => { trashDiv.style.opacity = 1; }, 50);
+
+      startCooldown();
+    }
+
+    function addToShelf(game) {
+      const shelf = document.getElementById("gameShelf");
+      let rows = shelf.querySelectorAll(".shelf-row");
+      let lastRow = rows[rows.length - 1];
+
+      if (!lastRow || lastRow.children.length >= 5) {
+        lastRow = document.createElement("div");
+        lastRow.className = "shelf-row";
+        shelf.appendChild(lastRow);
+      }
+
+      const div = document.createElement("div");
+      div.className = shelf-card ${game.rarity};
+      div.innerHTML = ${game.name}<br><span>[${game.rarity.toUpperCase()}]</span>;
+      div.onclick = () => div.classList.toggle("selected");
+      lastRow.appendChild(div);
+    }
+
+    function gambleGames() {
+      const selected = document.querySelectorAll(".shelf-card.selected");
+      if (selected.length === 0) return alert("Pick at least 1 game to offer!");
+
+      let boost = 0;
+      selected.forEach(card => {
+        const text = card.textContent;
+        const rarity = text.includes("LEGENDARY") ? "legendary" : text.includes("EPIC") ? "epic" : text.includes("RARE") ? "rare" : "common";
+        boost += rarityScore[rarity];
+        card.remove();
+      });
+
+      selected.forEach(card => {
+        const name = card.textContent.split("[")[0].trim();
+        const index = library.findIndex(g => g.name === name);
+        if (index !== -1) library.splice(index, 1);
+      });
+
+      localStorage.setItem("solGameLibrary", JSON.stringify(library));
+      rollGame(boost * 1.5);
+    }
+
+    function openPopup(link) {
+      document.getElementById("popupFrame").src = link;
+      document.getElementById("gamePopup").style.display = "flex";
+      document.getElementById("blurBg").style.display = "block";
+    }
+
+    function closePopup() {
+      document.getElementById("popupFrame").src = "";
+      document.getElementById("gamePopup").style.display = "none";
+      document.getElementById("blurBg").style.display = "none";
+    }
+
+    function startCooldown() {
+      const btn = document.getElementById("pullBtn");
+      const fill = document.getElementById("cooldownFill");
+      btn.disabled = true;
+      let time = 3;
+      let elapsed = 0;
+      const interval = setInterval(() => {
+        elapsed += 0.1;
+        fill.style.width = ${(elapsed / time) * 100}%;
+        if (elapsed >= time) {
+          clearInterval(interval);
+          btn.disabled = false;
+          fill.style.width = "0%";
+        }
+      }, 100);
+    }
+
+    window.onload = () => {
+      const saved = localStorage.getItem("solGameLibrary");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        parsed.forEach(g => {
+          library.push(g);
+          addToShelf(g);
+        });
+      }
+    };
+  </script>
 </body>
 </html>
