@@ -269,12 +269,13 @@
       }
 
       const result = document.getElementById("result");
-      result.innerHTML = 
-        <div class="result-card ${selected.rarity}">
-          <div class="card-shimmer"></div>
-          <div><strong>${selected.name}</strong></div>
-          <div>[${selected.rarity.toUpperCase()}]</div>
-        </div>;
+     result.innerHTML = `
+  <div class="result-card ${selected.rarity}">
+    <div class="card-shimmer"></div>
+    <div><strong>${selected.name}</strong></div>
+    <div>[${selected.rarity.toUpperCase()}]</div>
+  </div>`;
+
 
       const trash = trashLines[Math.floor(Math.random() * trashLines.length)];
       const trashDiv = document.getElementById("trashTalk");
@@ -297,8 +298,8 @@
       }
 
       const div = document.createElement("div");
-      div.className = shelf-card ${game.rarity};
-      div.innerHTML = ${game.name}<br><span>[${game.rarity.toUpperCase()}]</span>;
+     div.className = `shelf-card ${game.rarity}`;
+div.innerHTML = `${game.name}<br><span>[${game.rarity.toUpperCase()}]</span>`;
       div.onclick = () => div.classList.toggle("selected");
       lastRow.appendChild(div);
     }
@@ -345,7 +346,7 @@
       let elapsed = 0;
       const interval = setInterval(() => {
         elapsed += 0.1;
-        fill.style.width = ${(elapsed / time) * 100}%;
+        fill.style.width = `${(elapsed / time) * 100}%`;
         if (elapsed >= time) {
           clearInterval(interval);
           btn.disabled = false;
