@@ -88,15 +88,12 @@
     .result-card.common {
       box-shadow: 0 0 20px #aaa;
     }
-
     .result-card.rare {
       box-shadow: 0 0 20px #00faff;
     }
-
     .result-card.epic {
       box-shadow: 0 0 20px #cc00ff;
     }
-
     .result-card.legendary {
       box-shadow: 0 0 25px #ffc700;
     }
@@ -107,7 +104,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+      background: linear-gradient(135deg, transparent, rgba(255,255,255,0.15), transparent);
       transform: translateX(-100%) translateY(-100%);
       animation: shimmer 1s ease forwards;
       pointer-events: none;
@@ -139,19 +136,19 @@
     }
 
     @keyframes slideToShelf {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(400px) scale(0.3);
-    opacity: 0;
-  }
-}
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(400px) scale(0.3);
+        opacity: 0;
+      }
+    }
 
-.slide-to-shelf {
-  animation: slideToShelf 0.7s ease-in forwards;
-}
+    .slide-to-shelf {
+      animation: slideToShelf 0.7s ease-in forwards;
+    }
 
     .game-shelf {
       display: flex;
@@ -197,19 +194,10 @@
       transform: scale(1.05);
     }
 
-    .common {
-      color: #aaa;
-    }
-    .rare {
-      color: #00faff;
-    }
-    .epic {
-      color: #cc00ff;
-    }
-    .legendary {
-      color: #ffc700;
-      font-weight: bold;
-    }
+    .common { color: #aaa; }
+    .rare { color: #00faff; }
+    .epic { color: #cc00ff; }
+    .legendary { color: #ffc700; font-weight: bold; }
 
     .blur-bg {
       position: fixed;
@@ -318,46 +306,33 @@
       const filtered = games.filter(g => g.rarity === pickedRarity);
       const selected = filtered[Math.floor(Math.random() * filtered.length)];
 
-      if (!library.find(g => g.name === selected.name)) {
-        library.push(selected);
-        localStorage.setItem("solGameLibrary", JSON.stringify(library));
-        addToShelf(selected);
-      }
+      const result = document.getElementById("result");
+      const resultCard = document.createElement("div");
+      resultCard.className = `result-card ${selected.rarity} slide-to-shelf`;
+      resultCard.innerHTML = `
+        <div class="card-shimmer"></div>
+        <div><strong>${selected.name}</strong></div>
+        <div>[${selected.rarity.toUpperCase()}]</div>
+      `;
+      result.innerHTML = "";
+      result.appendChild(resultCard);
 
-    const result = document.getElementById("result");
-result.innerHTML = `
-  <div class="result-card ${selected.rarity}" id="pulledCard">
-    <div class="card-shimmer"></div>
-    <div><strong>${selected.name}</strong></div>
-    <div>[${selected.rarity.toUpperCase()}]</div>
-  </div>`;
+      setTimeout(() => {
+        if (!library.find(g => g.name === selected.name)) {
+          library.push(selected);
+          localStorage.setItem("solGameLibrary", JSON.stringify(library));
+          addToShelf(selected);
+        }
+      }, 700);
 
-// show trash talk
-const trash = trashLines[Math.floor(Math.random() * trashLines.length)];
-const trashDiv = document.getElementById("trashTalk");
-trashDiv.textContent = trash;
-trashDiv.style.opacity = 0;
-setTimeout(() => {
-  trashDiv.style.opacity = 1;
-}, 50);
+      const trash = trashLines[Math.floor(Math.random() * trashLines.length)];
+      const trashDiv = document.getElementById("trashTalk");
+      trashDiv.textContent = trash;
+      trashDiv.style.opacity = 0;
+      setTimeout(() => { trashDiv.style.opacity = 1; }, 50);
 
-// delay before moving to shelf
-setTimeout(() => {
-  const card = document.getElementById("pulledCard");
-  card.classList.add("slide-to-shelf");
-
-  // after animation ends
-  card.addEventListener("animationend", () => {
-    if (!library.find(g => g.name === selected.name)) {
-      library.push(selected);
-      localStorage.setItem("solGameLibrary", JSON.stringify(library));
+      startCooldown();
     }
-    addToShelf(selected);
-    result.innerHTML = ""; // clear pulled card
-  });
-}, 1000); // 1s pause before slide
-
-startCooldown();
 
     function addToShelf(game) {
       const shelf = document.getElementById("gameShelf");
@@ -373,10 +348,8 @@ startCooldown();
       const div = document.createElement("div");
       div.className = `shelf-card ${game.rarity}`;
       div.innerHTML = `${game.name}<br><span>[${game.rarity.toUpperCase()}]</span>`;
-
       div.onclick = () => div.classList.toggle("selected");
       div.ondblclick = () => openPopup(game.link);
-
       lastRow.appendChild(div);
     }
 
