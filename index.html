@@ -138,6 +138,21 @@
       }
     }
 
+    @keyframes slideToShelf {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(400px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+.slide-to-shelf {
+  animation: slideToShelf 0.7s ease-in forwards;
+}
+
     .game-shelf {
       display: flex;
       flex-direction: column;
@@ -309,22 +324,40 @@
         addToShelf(selected);
       }
 
-      const result = document.getElementById("result");
-      result.innerHTML = `
-        <div class="result-card ${selected.rarity}">
-          <div class="card-shimmer"></div>
-          <div><strong>${selected.name}</strong></div>
-          <div>[${selected.rarity.toUpperCase()}]</div>
-        </div>`;
+    const result = document.getElementById("result");
+result.innerHTML = `
+  <div class="result-card ${selected.rarity}" id="pulledCard">
+    <div class="card-shimmer"></div>
+    <div><strong>${selected.name}</strong></div>
+    <div>[${selected.rarity.toUpperCase()}]</div>
+  </div>`;
 
-      const trash = trashLines[Math.floor(Math.random() * trashLines.length)];
-      const trashDiv = document.getElementById("trashTalk");
-      trashDiv.textContent = trash;
-      trashDiv.style.opacity = 0;
-      setTimeout(() => { trashDiv.style.opacity = 1; }, 50);
+// show trash talk
+const trash = trashLines[Math.floor(Math.random() * trashLines.length)];
+const trashDiv = document.getElementById("trashTalk");
+trashDiv.textContent = trash;
+trashDiv.style.opacity = 0;
+setTimeout(() => {
+  trashDiv.style.opacity = 1;
+}, 50);
 
-      startCooldown();
+// delay before moving to shelf
+setTimeout(() => {
+  const card = document.getElementById("pulledCard");
+  card.classList.add("slide-to-shelf");
+
+  // after animation ends
+  card.addEventListener("animationend", () => {
+    if (!library.find(g => g.name === selected.name)) {
+      library.push(selected);
+      localStorage.setItem("solGameLibrary", JSON.stringify(library));
     }
+    addToShelf(selected);
+    result.innerHTML = ""; // clear pulled card
+  });
+}, 1000); // 1s pause before slide
+
+startCooldown();
 
     function addToShelf(game) {
       const shelf = document.getElementById("gameShelf");
