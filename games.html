@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>crazycals</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #111, #222);
+      color: #fff;
+      font-family: sans-serif;
+    }
+
+    .navbar {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .navbar h2 {
+      margin: 0;
+    }
+
+    .games-container {
+      padding: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 30px;
+    }
+
+    .game-card {
+      background: #333;
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      transition: transform 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      text-decoration: none;
+      color: white;
+    }
+
+    .game-card img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border-radius: 12px;
+    }
+
+    .game-card:hover {
+      transform: scale(1.05);
+    }
+
+    .game-card p {
+      margin: 0;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <h2>🕹️ cal’s games</h2>
+    <a href="index.html" style="color: white; text-decoration: none;">← back</a>
+  </div>
+
+  <div class="games-container">
+    <a href="edgesurf/index.html" target="_blank" class="game-card">
+      <img src="https://winblogs.thesourcemediaassets.com/2020/05/ac849e2218ad3291c33259ce3cc01f4a-3.png" alt="Edge Surf">
+      <p>Edge Surf</p>
+    </a>
+
+    <a href="cookie-clicker/index.html" target="_blank" class="game-card">
+      <img src="https://play-lh.googleusercontent.com/Z1MOuuiD05ZN5LkVmMEvKF0mqAc-FknaQ2j8s4dZiO-LSPQX4EEA3RVJdlQEtxe96ok" alt="Cookie Clicker">
+      <p>Cookie Clicker</p>
+    </a>
+
+    <a href="breakoid/index.html" target="_blank" class="game-card">
+      <img src="https://hyhygames.com/thumbs/breakoid-game-thumb_2.webp" alt="Breakoid">
+      <p>Breakoid</p>
+    </a>
+
+    <a href="drivemad/index.html" target="_blank" class="game-card">
+      <img src="https://play-lh.googleusercontent.com/7l3WAPbei9MXrxnCzImpXi2VxjEBtgDl0htwvTnA-YqpJAuQJPpSiby1oB8LZMgD0IAy" alt="Drive Mad">
+      <p>Drive Mad</p>
+    </a>
+
+    <!-- add more game cards here -->
+  </div>
+
+</body>
+</html>
 
