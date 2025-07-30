@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>crazy cals</title>
+  <title>crazycals</title>
   <style>
     body {
       margin: 0; font-family: sans-serif;
@@ -16,7 +16,6 @@
       padding: 20px 40px; z-index: 10;
       backdrop-filter: blur(8px);
     }
-
 
     .menu-btn {
       cursor: pointer; font-size: 30px;
@@ -55,56 +54,21 @@
     .overlay a:nth-child(2) { transition-delay: 0.2s; }
     .overlay a:nth-child(3) { transition-delay: 0.3s; }
     .overlay a:nth-child(4) { transition-delay: 0.4s; }
-    
-   .game-card {
-  background: #333;
-  padding: 20px;
-  border-radius: 16px;
-  width: 140px;
-  text-align: center;
-  transition: transform 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  text-decoration: none;
-  color: white;
-  display: inline-block;
-}
-
-.game-card:hover {
-  transform: scale(1.05);
-}
-
-
   </style>
 </head>
 <body>
 
   <div class="navbar">
-    <h2>🌐 cal's site</h2>
+    <h2>🌐 crazy calculators</h2>
     <div class="menu-btn" onclick="toggleMenu()">☰</div>
   </div>
 
   <div class="overlay" id="navOverlay">
     <a href="#">home</a>
-    <a href="#">games</a>
+    <a href="games.html">games</a>
     <a href="#">about</a>
     <a href="#">exit</a>
   </div>
-
-   <div class="game-section">
-  <a href="OVOfr/index.html" target="_blank" class="game-card">
-    <img src="https://play-lh.googleusercontent.com/v7KwGdPjJGjJjRXn46sck4DwDBdKSeRzGN44CjiXUtKV0jjOi51Bt4wcXud0m-SkXg" alt="game 1">
-    <p>OVO</p>
-  </a>
-
-  <a href="basketbros/index.html" target="_blank" class="game-card">
-    <img src="https://images.crazygames.com/basketbros_1x1/20250320082608/basketbros_1x1-cover?auto=format,compress&q=75&cs=strip" alt="game 2">
-    <p>Basket Bros</p>
-  </a>
-
-  <!-- add more game links like this -->
-</div>
-
-
 
   <script>
     function toggleMenu() {
