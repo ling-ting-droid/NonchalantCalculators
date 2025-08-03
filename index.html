@@ -1,78 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>crazycals</title>
-  <style>
-    body {
-      margin: 0; font-family: sans-serif;
-      background: linear-gradient(135deg, #111, #222);
-      color: #111;
-    }
-
-    .navbar {
-      position: fixed; top: 0; left: 0; right: 0;
-      display: flex; justify-content: space-between;
-      padding: 20px 40px; z-index: 10;
-      backdrop-filter: blur(8px);
-    }
-
-    .menu-btn {
-      cursor: pointer; font-size: 30px;
-      transition: transform 0.3s ease;
-    }
-
-    .menu-btn:hover { transform: scale(1.1); }
-
-    .overlay {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.8);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 20px; opacity: 0; pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-
-    .overlay.active {
-      opacity: 1; pointer-events: auto;
-    }
-
-    .overlay a {
-      font-size: 2rem;
-      color: #fff; text-decoration: none;
-      transform: translateY(20px);
-      opacity: 0; transition: 0.3s ease;
-    }
-
-    .overlay.active a {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .overlay a:nth-child(1) { transition-delay: 0.1s; }
-    .overlay a:nth-child(2) { transition-delay: 0.2s; }
-    .overlay a:nth-child(3) { transition-delay: 0.3s; }
-    .overlay a:nth-child(4) { transition-delay: 0.4s; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <link rel="icon" id="icon" href="/assets/img/salyte.jpg">
+  <script src="/assets/js/cdn-rocket.js?v=3" defer></script>
+  <link rel="stylesheet" href="/assets/css/app.css?v=3">
+  <link rel="stylesheet" href="/assets/css/menu.css?v=3">
+  <script rel="preload" src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js?v=3"></script>
+  <script src="/assets/js/anym.js?v=3"></script>
+  <title>Dashboard | Salyte</title>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6YEQ7Q0XRC"></script>
+  <script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-6YEQ7Q0XRC');</script>
 </head>
 <body>
-
-  <div class="navbar">
-    <h2>🌐 crazy calculators</h2>
-    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  <script src="/baremux/index.js?v=3"></script>
+  <script src="/wk/wk2.js?v=3"></script>
+  <script src="/wk/wk3.js?v=3"></script>
+<div id="contextMenu" class="context-menu themesExcluded" style="--ripple-duration: 300ms;"><div class="context-menu-item with-submenu themesExcluded" id="contextItem" anim="ripple" onclick="toggleSubmenu(event)"><i class="bi bi-file-spreadsheet"></i> Tab Cloak</div><div class="context-submenu themesExcluded" id="contextItem"><div class="context-menu-item themesExcluded" id="contextItem" anim="ripple" onclick="tabCloak()">Enable</div><div class="context-menu-item themesExcluded" anim="ripple" onclick="disableTabCloak()">Disable</div></div><div class="context-menu-item themesExcluded" id="contextItem" onclick="visitSite()"><i class="bi bi-clock-history"></i> Last Visited Site</div><div class="context-menu-item themesExcluded" id="contextItem" onclick="openWindow()"><i class="bi bi-box-arrow-up-right"></i> About:Blank Cloak</div><div class="context-menu-item themesExcluded" id="contextItem" onclick="openSettings()"><i class="bi bi-gear"></i> View all Settings</div></div>
+<nav id="mytopnav">
+  <button class="btn-main" anim="ripple" onclick="send('/settings.html')"><i class="bi bi-gear" style="font-size:30px;"></i>Settings</button>
+  <button class="btn-main" anim="ripple" onclick="send('/gms')"><i class="bi bi-joystick" style="font-size:30px;"></i>Games</button>
+  <button class="btn-main" anim="ripple" onclick="send('/apps')"><i class="bi bi-grid-fill" style="font-size:30px;"></i>Apps</button><br>
+  <a href="#" class="title" anim="ripple"><img src="/assets/img/doge2.jpg" style="width:22px;height:22px;" id="logo"> Doge Unblocker</a>    
+</nav>
+  <div style="text-align:center;color:white;margin-top: 80px;z-index:1;" class="themesExcluded">
+    <div class="themesExcluded">
+      <i class="bi bi-search search" id="search"></i>
+      <form method="POST" id="uform" autocomplete="off" class="themesExcluded" style="z-index:1;">
+        <input type="text" name="url" class="browse-input themesExcluded" style="font-family:poppins;font-size:20px;z-index:1;" placeholder="Type URL or search query"><p class="splashText themesExcluded" id="placeholder"></p>
+      </form>
+    </div>
+    <div class="footer themesExcluded" style="text-align:right;">
+      <a href="https://discord.gg/sWPHCdxCPU" target="new"><i class="bi bi-discord"></i></a>
+      <a href="https://github.com/dogenetwork/v4" target="new"><i class="bi bi-github"></i></a>
+    </div>
+    <div class="bottom-right-content themesExcluded">
+    <a href="/info">Site Info</a>
   </div>
-
-  <div class="overlay" id="navOverlay">
-    <a href="games.html">games</a>
-    <a href="https://lookthrough3.vercel.app/">dogebrowser</a>
-  </div>
-
-  <script>
-    function toggleMenu() {
-      document.getElementById("navOverlay").classList.toggle("active")
-    }
-  </script>
-
+  <script src="/assets/js/main.js?v=3"></script>
+  <script src="/assets/js/index.js?v=3"></script>
+  <script src="/assets/js/themes.js?v=3"></script>
+  <script src="/assets/js/particles.js?v=3"></script>
+  <script src="/assets/js/register.js?v=3" defer></script>
+</div>
 </body>
 </html>
