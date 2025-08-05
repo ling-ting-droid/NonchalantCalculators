@@ -4,28 +4,79 @@
   <meta charset="UTF-8">
   <title>crazycals</title>
   <style>
-    .moving-banner {
+
+    /* BULGE ICON */
+.bulge-wrapper {
   position: fixed;
-  top: 30px;
-  left: -100%;
-  transform: rotate(-10deg);
-  background: red;
-  color: white;
-  padding: 10px 50px;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9998;
+}
+
+.bulge-icon {
+  width: 80px;
+  animation: bulge 1s infinite ease-in-out;
+  cursor: pointer;
+}
+
+@keyframes bulge {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+/* MOVING BANNERS */
+.moving-banner {
+  position: fixed;
+  width: 100%;
+  text-align: center;
+  font-size: 22px;
   font-weight: bold;
-  font-size: 1.2em;
-  animation: slide-banner 10s linear infinite;
+  color: #fff;
+  text-shadow: 0 0 5px #000;
+  background: red;
+  padding: 5px 0;
+  transform: rotate(-2deg);
+  animation: slideBanner 10s linear infinite;
   z-index: 9999;
 }
 
-@keyframes slide-banner {
+.banner1 {
+  top: 0;
+}
+
+.banner2 {
+  top: 40px;
+  animation-delay: 5s;
+}
+
+@keyframes slideBanner {
   0% {
     left: -100%;
   }
   100% {
-    left: 110%;
+    left: 100%;
   }
 }
+
+/* OPTIONAL: NAVBAR + OVERLAY FIXES */
+.navbar {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  z-index: 9997;
+  position: fixed;
+  width: 100%;
+}
+
+.overlay {
+  z-index: 9996;
+}
+
 
     body {
       margin: 0; font-family: sans-serif;
@@ -78,26 +129,18 @@
     .overlay a:nth-child(3) { transition-delay: 0.3s; }
     .overlay a:nth-child(4) { transition-delay: 0.4s; }
 
-    .bulge-icon {
-  width: 64px;
-  animation: bulge 1s infinite ease-in-out;
-}
-
-@keyframes bulge {
-  0%, 100% {
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    transform: scale(1.2) rotate(5deg);
-  }
-}
   </style>
 </head>
 <body>
   
-<div class="moving-banner">🔥 GET VPN NOW FREE 🔥</div>
-  
+<!-- BULGING ICON -->
+<div class="bulge-wrapper">
   <img src="https://pacifichifi.s3.ap-southeast-2.amazonaws.com/wp-content/uploads/2021/07/10044419/JBL-Charge-3-Full-featured-Waterproof-Portable-Speaker-Teal-Angle-1.jpg" class="bulge-icon">
+</div>
+
+<!-- MOVING BANNERS -->
+<div class="moving-banner banner1">🔥 HOT DEALS 🔥</div>
+<div class="moving-banner banner2">💀 LIMITED TIME OFFER 💀</div>
 
   <div class="navbar">
     <h2>🌐 crazy calculators</h2>
