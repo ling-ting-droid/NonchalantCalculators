@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>crazycals</title>
+  <style>
+    body {
+  margin: 0;
+  background: #000; /* whole site background */
+  color: #fff;
+  font-family: sans-serif;
+}
+
+.navbar {
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none; /* removes separate top bar bg */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+    .menu-btn {
+      cursor: pointer; font-size: 30px;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-btn:hover { transform: scale(1.1); }
+
+    .overlay {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.8);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px; opacity: 0; pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .overlay.active {
+      opacity: 1; pointer-events: auto;
+    }
+
+    .overlay a {
+      font-size: 2rem;
+      color: #fff; text-decoration: none;
+      transform: translateY(20px);
+      opacity: 0; transition: 0.3s ease;
+    }
+
+    .overlay.active a {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .overlay a:nth-child(1) { transition-delay: 0.1s; }
+    .overlay a:nth-child(2) { transition-delay: 0.2s; }
+    .overlay a:nth-child(3) { transition-delay: 0.3s; }
+    .overlay a:nth-child(4) { transition-delay: 0.4s; }
+
+    /* download button style */
+    .download-btn {
+      display: inline-block;
+      margin-top: 120px; /* so it’s under navbar */
+      padding: 16px 28px;
+      background: #ff4444;
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(255, 68, 68, 0.4);
+      transition: 0.2s ease;
+    }
+    .download-btn:hover {
+      background: #ff6666;
+      transform: scale(1.05);
+      box-shadow: 0 8px 18px rgba(255, 68, 68, 0.6);
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="navbar">
+    <h2>🌐 crazy calculators</h2>
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+  </div>
+
+  <!-- download button -->
+  <div style="text-align:center;">
+    <a href="https://drive.google.com/file/d/16y2c-m3XMoYLMxYW3kokTe9Zde4mQ02_/view?usp=drive_link" class="download-btn">
+      ⬇ download zip
+    </a>
+  </div>
+
+  <div class="overlay" id="navOverlay">
+    <a href="games.html">games</a>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("navOverlay").classList.toggle("active")
+    }
+  </script>
+
+</body>
+</html>
