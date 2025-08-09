@@ -5,60 +5,32 @@
   <title>crazycals</title>
   <style>
     body {
-  margin: 0;
-  background: #000; /* whole site background */
-  color: #fff;
-  font-family: sans-serif;
-}
-
-.navbar {
-  padding: 20px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: none; /* removes separate top bar bg */
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-    .menu-btn {
-      cursor: pointer; font-size: 30px;
-      transition: transform 0.3s ease;
+      margin: 0;
+      background: #000; /* whole site background */
+      color: #fff;
+      font-family: sans-serif;
     }
 
-    .menu-btn:hover { transform: scale(1.1); }
-
-    .overlay {
-      position: fixed; top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.8);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 20px; opacity: 0; pointer-events: none;
-      transition: opacity 0.4s ease;
+    .navbar {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: none; /* removes separate top bar bg */
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
-    .overlay.active {
-      opacity: 1; pointer-events: auto;
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: color 0.2s ease;
     }
-
-    .overlay a {
-      font-size: 2rem;
-      color: #fff; text-decoration: none;
-      transform: translateY(20px);
-      opacity: 0; transition: 0.3s ease;
+    .navbar a:hover {
+      color: #ff4444;
     }
-
-    .overlay.active a {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .overlay a:nth-child(1) { transition-delay: 0.1s; }
-    .overlay a:nth-child(2) { transition-delay: 0.2s; }
-    .overlay a:nth-child(3) { transition-delay: 0.3s; }
-    .overlay a:nth-child(4) { transition-delay: 0.4s; }
 
     /* download button style */
     .download-btn {
@@ -85,25 +57,16 @@
   
   <div class="navbar">
     <h2>🌐 crazy calculators</h2>
-    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+    <a href="index.html">← back</a>
   </div>
 
   <!-- download button -->
-  <div style="text-align:center;">
-    <a href="https://drive.google.com/file/d/16y2c-m3XMoYLMxYW3kokTe9Zde4mQ02_/view?usp=drive_link" class="download-btn">
-      ⬇ download zip
-    </a>
-  </div>
+ <div style="text-align:center; margin-top: 120px; display: flex; flex-direction: column; gap: 16px; align-items: center;">
+  <a href="https://drive.google.com/file/d/16y2c-m3XMoYLMxYW3kokTe9Zde4mQ02_/view?usp=drive_link" class="download-btn">⬇ get fnaf 6 remake</a>
+  <a href="https://drive.google.com/file/d/1rLMMOEOXEhPIZqjQMRe5FGXPs7nc08QO/view?usp=drive_link">⬇ get evil santa claus </a>
+  <a href="https://drive.google.com/file/d/1oZGuWYKpi6pm0hoktvymI4M5nIgmPgWP/view?usp=sharing">⬇ get on the lookout of doppelgangers</a>
+</div>
 
-  <div class="overlay" id="navOverlay">
-    <a href="games.html">games</a>
-  </div>
-
-  <script>
-    function toggleMenu() {
-      document.getElementById("navOverlay").classList.toggle("active")
-    }
-  </script>
 
 </body>
 </html>
