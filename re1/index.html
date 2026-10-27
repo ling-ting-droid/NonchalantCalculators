@@ -7,30 +7,29 @@
     // Emulator Configuration
     EJS_player = '#game';
     
-    // Beetle-psx handles the 3D upscaling engine
+    // Stable PS1 Core
     EJS_core = 'psx'; 
     
     EJS_gameName = 'Resident Evil (1996)';
     EJS_color = '#ff0000'; // Resident Evil Red theme
     EJS_startOnLoaded = false; // Gives player a "Click to Play" button
-    
+    EJS_cors = true; // Bypasses browser cross-origin download walls
+
     // AUTOMATIC HIGH-DEF RENDERING: Forces a sharp 4x high-quality upscaling shader on load
     EJS_defaultShader = '4xscalehq'; 
 
-    // Uses EmulatorJS's official free public data folder
-    EJS_pathtodata = 'https://emulatorjs.org'; 
+    // FIXED: Maps to the correct public CDN network mirror so you don't have to download anything
+    EJS_pathtodata = 'https://jsdelivr.net'; 
     
-    // PASTE YOUR GITHUB LINKS INSIDE THE QUOTES BELOW:
-    // Both the .bin and .cue files must be listed together inside the square brackets below
+    // Your active GitHub links mapped inside the array brackets
     EJS_gameUrl = [
         'https://github.com/ling-ting-droid/NonchalantCalculators/releases/download/v.1.0.0/Resident.Evil.-.Director.s.Cut.cue', 
         'https://github.com/ling-ting-droid/NonchalantCalculators/releases/download/v.1.0.0/Resident.Evil.-.Director.s.Cut.bin'
     ]; 
     
-    // Paste your BIOS file link here
+    // Your verified BIOS file link
     EJS_biosUrl = 'https://github.com/ling-ting-droid/NonchalantCalculators/releases/download/v.1.0.0/SCPH1001.BIN'; 
 </script>
 
-<!-- Loads the emulator engine -->
-<script src="https://emulatorjs.orgloader.js"></script>
-
+<!-- FIXED: Loads the emulator engine script from the proper unthrottled global CDN path -->
+<script src="https://jsdelivr.netloader.js"></script>
