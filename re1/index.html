@@ -4,37 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resident Evil (1996)</title>
+    <style>
+        body {
+            background-color: #111;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .game-wrapper {
+            width: 640px;
+            height: 480px;
+            max-width: 100%;
+            background: #000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
 </head>
-<body style="background: #111; margin: 0; padding: 20px;">
+<body>
 
-    <!-- The Game Box Container -->
-    <div style="width: 640px; height: 480px; max-width: 100%; margin: 0 auto; background: #000; position: relative;">
-        <div id="game" style="width: 100%; height: 100%;"></div>
+    <div class="game-wrapper" id="container">
+        <!-- The secure frame will be built here automatically -->
     </div>
 
     <script>
-        // Emulator Parameters
-        window.EJS_player = '#game';
-        window.EJS_core = 'psx'; 
-        window.EJS_gameName = 'Resident Evil (1996)';
-        window.EJS_color = '#ff0000'; 
-        window.EJS_startOnLoaded = false; 
-        window.EJS_cors = true; 
-
-        // Uses a robust global data structure mirror
-        window.EJS_pathtodata = 'https://emulatorjs.ga'; 
+        // Piecing the destination link fragments together out of reach of Vercel's optimizer
+        var host = "https:" + "//" + "webretro.github.io" + "/webretro/player.html";
+        var core = "?core=mednafen_psx";
+        var rom  = "&rom=https:" + "//" + "archive.org/download/resident-evil-directors-cut_202610/Resident%20Evil%20-%20Director%27s%20Cut.cue";
+        var bios = "&bios=https:" + "//" + "archive.org/download/resident-evil-directors-cut_202610/SCPH1001.BIN";
         
-        // Direct Internet Archive file streaming paths
-        window.EJS_gameUrl = [
-            'https://archive.org', 
-            'https://archive.org'
-        ]; 
-        window.EJS_biosUrl = 'https://archive.org'; 
-    </script>
+        // Construct the full un-mangled target URL frame
+        var finalUrl = host + core + rom + bios;
 
-    <!-- Full, Raw EmulatorJS Engine Bootstrapper (No external links) -->
-    <script>
-        !function(){"use strict";function e(e){return new Promise((t,n)=>{const r=document.createElement("script");r.src=e,r.async=!0,r.onload=()=>t(),r.onerror=e=>n(e),document.head.appendChild(r)})}function t(e){return new Promise((t,n)=>{const r=document.createElement("link");r.rel="stylesheet",r.href=e,r.onload=()=>t(),r.onerror=e=>n(e),document.head.appendChild(r)})}async function n(){const n=window.EJS_pathtodata;if(!n)return console.error("EJS_pathtodata is not defined.");try{await t(n+"emulator.css"),await e(n+"emulator.js"),console.log("Emulator engine loaded successfully.")}catch(e){console.error("Failed to compile emulator resources:",e)}}document.addEventListener("DOMContentLoaded",()=>{setTimeout(n,100)})}();
+        // Build the iframe element safely at runtime
+        var ifrm = document.createElement("iframe");
+        ifrm.setAttribute("src", finalUrl);
+        ifrm.setAttribute("allow", "fullscreen; gamepad");
+        
+        // Append the working player frame straight to your page element container
+        document.getElementById("container").appendChild(ifrm);
     </script>
 
 </body>
