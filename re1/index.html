@@ -4,56 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resident Evil (1996)</title>
-    <style>
-        body {
-            background-color: #111;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .game-wrapper {
-            width: 640px;
-            height: 480px;
-            max-width: 100%;
-            background: #000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-    </style>
 </head>
-<body>
+<body style="background: #111; margin: 0; padding: 20px;">
 
-    <div class="game-wrapper" id="container">
-        <!-- The secure frame will be built here automatically -->
+    <!-- The Game Box -->
+    <div style="width: 640px; height: 480px; max-width: 100%; margin: 0 auto; background: #000; position: relative;">
+        <div id="game" style="width: 100%; height: 100%;"></div>
     </div>
 
     <script>
-        // Piecing the destination link fragments together out of reach of Vercel's optimizer
-        var host = "https:" + "//" + "webretro.github.io" + "/webretro/player.html";
-        var core = "?core=mednafen_psx";
-        var rom  = "&rom=https:" + "//" + "archive.org/download/resident-evil-directors-cut_202610/Resident%20Evil%20-%20Director%27s%20Cut.cue";
-        var bios = "&bios=https:" + "//" + "archive.org/download/resident-evil-directors-cut_202610/SCPH1001.BIN";
-        
-        // Construct the full un-mangled target URL frame
-        var finalUrl = host + core + rom + bios;
+        EJS_player = '#game';
+        EJS_core = 'psx'; 
+        EJS_gameName = 'Resident Evil (1996)';
+        EJS_color = '#ff0000'; 
+        EJS_startOnLoaded = false; 
+        EJS_cors = true; 
 
-        // Build the iframe element safely at runtime
-        var ifrm = document.createElement("iframe");
-        ifrm.setAttribute("src", finalUrl);
-        ifrm.setAttribute("allow", "fullscreen; gamepad");
+        // 🌟 TELLS THE ENGINE TO LOAD LOCAL SERVER FILES:
+        EJS_pathtodata = './data/'; 
         
-        // Append the working player frame straight to your page element container
-        document.getElementById("container").appendChild(ifrm);
+        // Your unblocked Archive.org game files
+        EJS_gameUrl = [
+            'https://archive.org/download/resident-evil-directors-cut_202610/Resident%20Evil%20-%20Director%27s%20Cut.cue', 
+            'https://archive.org/download/resident-evil-directors-cut_202610/Resident%20Evil%20-%20Director%27s%20Cut.bin'
+        ]; 
+        EJS_biosUrl = 'https://archive.org/download/resident-evil-directors-cut_202610/SCPH1001.BIN'; 
     </script>
+
+    <!-- 🌟 LOADS THE LOADER STRAIGHT FROM YOUR LOCAL FORK -->
+    <script src="./data/loader.js"></script>
 
 </body>
 </html>
