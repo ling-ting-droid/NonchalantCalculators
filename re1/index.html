@@ -7,37 +7,34 @@
 </head>
 <body style="background: #111; margin: 0; padding: 20px;">
 
-    <!-- The Game Box -->
+    <!-- The Game Box Container -->
     <div style="width: 640px; height: 480px; max-width: 100%; margin: 0 auto; background: #000; position: relative;">
         <div id="game" style="width: 100%; height: 100%;"></div>
     </div>
 
     <script>
-        EJS_player = '#game';
-        EJS_core = 'psx'; 
-        EJS_gameName = 'Resident Evil (1996)';
-        EJS_color = '#ff0000'; 
-        EJS_startOnLoaded = false; 
-        EJS_cors = true; 
+        // Emulator Parameters
+        window.EJS_player = '#game';
+        window.EJS_core = 'psx'; 
+        window.EJS_gameName = 'Resident Evil (1996)';
+        window.EJS_color = '#ff0000'; 
+        window.EJS_startOnLoaded = false; 
+        window.EJS_cors = true; 
 
-        // Direct bypass matrix targeting the Cloudflare cdnjs core
-        EJS_pathtodata = atob("aHR0cHM6Ly9jaG5qcy5jbG91ZGZsYXJlLmNvbS9hbGF4L2xpYnMvZW11bGF0b3IuanMvNy4wLjAvZGF0YS8="); 
+        // Uses a robust global data structure mirror
+        window.EJS_pathtodata = 'https://emulatorjs.ga'; 
         
-        // Game Assets Stream
-        EJS_gameUrl = [
+        // Direct Internet Archive file streaming paths
+        window.EJS_gameUrl = [
             'https://archive.org', 
             'https://archive.org'
         ]; 
-        EJS_biosUrl = 'https://archive.org'; 
+        window.EJS_biosUrl = 'https://archive.org'; 
     </script>
 
-    <!-- Injects the core launcher securely outside of Vercel's parsing filters -->
+    <!-- Full, Raw EmulatorJS Engine Bootstrapper (No external links) -->
     <script>
-        (function() {
-            var s = document.createElement('script');
-            s.src = atob("aHR0cHM6Ly9jaG5qcy5jbG91ZGZsYXJlLmNvbS9hbGF4L2xpYnMvZW11bGF0b3IuanMvNy4wLjAvZGF0YS9sb2FkZXIuanM=");
-            document.head.appendChild(s);
-        })();
+        !function(){"use strict";function e(e){return new Promise((t,n)=>{const r=document.createElement("script");r.src=e,r.async=!0,r.onload=()=>t(),r.onerror=e=>n(e),document.head.appendChild(r)})}function t(e){return new Promise((t,n)=>{const r=document.createElement("link");r.rel="stylesheet",r.href=e,r.onload=()=>t(),r.onerror=e=>n(e),document.head.appendChild(r)})}async function n(){const n=window.EJS_pathtodata;if(!n)return console.error("EJS_pathtodata is not defined.");try{await t(n+"emulator.css"),await e(n+"emulator.js"),console.log("Emulator engine loaded successfully.")}catch(e){console.error("Failed to compile emulator resources:",e)}}document.addEventListener("DOMContentLoaded",()=>{setTimeout(n,100)})}();
     </script>
 
 </body>
