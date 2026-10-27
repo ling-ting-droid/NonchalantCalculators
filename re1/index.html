@@ -15,9 +15,9 @@
     EJS_cors = true; 
 
     // Pointing to a bulletproof, unthrottled global javascript deployment network
-    EJS_pathtodata = 'https://jsdelivr.net'; 
+    EJS_pathtodata = 'https://cloudflare.com'; 
     
-    // ⬇️ PASTE YOUR INTERNET ARCHIVE LINKS INSIDE THE SINGLE QUOTES BELOW ⬇️
+    // Direct Internet Archive streaming data assets
     EJS_gameUrl = [
         'https://archive.org/download/resident-evil-directors-cut_202610/Resident%20Evil%20-%20Director%27s%20Cut.bin', 
         'https://archive.org/download/resident-evil-directors-cut_202610/Resident%20Evil%20-%20Director%27s%20Cut.cue'
@@ -26,7 +26,5 @@
     EJS_biosUrl = 'https://archive.org/download/resident-evil-directors-cut_202610/SCPH1001.BIN'; 
 </script>
 
-<!-- Launches the engine -->
-<!-- The broken line causing your error: -->
-<script src="https://jsdelivr.net"></script>
-
+<!-- Launches the engine using a stable, unblocked Cloudflare anchor -->
+<script src="https://cloudflare.comloader.js"></script>
