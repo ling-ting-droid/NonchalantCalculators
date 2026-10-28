@@ -5,18 +5,13 @@
 <script>
     EJS_player = '#game';
     EJS_core = 'psx';
-
-    // Bypassing language 404 by forcing standard English
     EJS_language = 'en-US';
 
-    // Routed through free open-source proxy to fix CORS restriction
-    EJS_biosUrl = 'https://corsproxy.io?' + encodeURIComponent('https://archive.org/download/resident-evil-directors-cut_202610/SCPH1001.BIN');
+    // Using AllOrigins free proxy wrapper
+    EJS_biosUrl = 'https://allorigins.win' + encodeURIComponent('https://archive.org/download/resident-evil-directors-cut_202610/SCPH1001.BIN');
+    EJS_gameUrl = 'https://allorigins.win' + encodeURIComponent('https://archive.org/download/resident-evil-directors-cut_20261028/Resident%20Evil%20-%20Director%27s%20Cut.chd');
 
-    // Routed through free open-source proxy to fix CORS restriction
-    EJS_gameUrl = 'https://corsproxy.io?' + encodeURIComponent('https://archive.org/download/resident-evil-directors-cut_20261028/Resident%20Evil%20-%20Director%27s%20Cut.chd');
-
-    // Load emulator data externally
-    EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+    EJS_pathtodata = 'https://emulatorjs.org';
 </script>
 
-<script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+<script src="https://emulatorjs.orgloader.js"></script>
