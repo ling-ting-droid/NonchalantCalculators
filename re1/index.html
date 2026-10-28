@@ -1,38 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resident Evil (1996)</title>
-</head>
-<body style="background: #111; margin: 0; padding: 20px;">
+<div style="width:640px;height:480px;max-width:100%">
+    <div id="game"></div>
+</div>
 
-    <!-- The Game Box -->
-    <div style="width: 640px; height: 480px; max-width: 100%; margin: 0 auto; background: #000; position: relative;">
-        <div id="game" style="width: 100%; height: 100%;"></div>
-    </div>
+<script>
+    EJS_player = '#game';
+    EJS_core = 'psx';
 
-    <script>
-        EJS_player = '#game';
-        EJS_core = 'psx'; 
-        EJS_gameName = 'Resident Evil (1996)';
-        EJS_color = '#ff0000'; 
-        EJS_startOnLoaded = false; 
-        EJS_cors = true; 
+    // Your compatible BIOS URL, if required
+    EJS_biosUrl = 'https://archive.org/download/resident-evil-directors-cut_202610/SCPH1001.BIN';
 
-        // 🌟 TELLS THE ENGINE TO LOAD LOCAL SERVER FILES:
-        EJS_pathtodata = './data/'; 
-        
-        // Your unblocked Archive.org game files
-        EJS_gameUrl = [
-            'https://archive.org/download/resident-evil-directors-cut_202610/Resident%20Evil%20-%20Director%27s%20Cut.cue', 
-            'https://archive.org/download/resident-evil-directors-cut_202610/Resident%20Evil%20-%20Director%27s%20Cut.bin'
-        ]; 
-        EJS_biosUrl = 'https://archive.org/download/resident-evil-directors-cut_202610/SCPH1001.BIN'; 
-    </script>
+    // Your game file URL
+    EJS_gameUrl = 'https://archive.org/download/resident-evil-directors-cut_20261028/Resident%20Evil%20-%20Director%27s%20Cut.chd';
 
-    <!-- 🌟 LOADS THE LOADER STRAIGHT FROM YOUR LOCAL FORK -->
-    <script src="./data/loader.js"></script>
+    // Load emulator data externally
+    EJS_pathtodata =
+        'https://cdn.emulatorjs.org/stable/data/';
+</script>
 
-</body>
-</html>
+<script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
