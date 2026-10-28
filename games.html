@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>crazycals</title>
 
   <style>
@@ -13,121 +13,87 @@
 
     body {
       margin: 0;
-      background: #fff;
-      color: #111;
-      font-family: Arial, Helvetica, sans-serif;
-      font-weight: 400;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
     }
 
-    /* Minimal top navigation */
     .navbar {
-      height: 58px;
-      padding: 0 26px;
+      height: 40px;
+      padding: 0 14px;
       display: flex;
+      justify-content: flex-end;
       align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(255, 255, 255, 0.96);
+      background: #000;
     }
 
-    .navbar h2 {
-      margin: 0;
-      font-size: 14px;
-      font-weight: 400;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
+    .navbar h2,
     .navbar a {
-      color: #111;
-      text-decoration: none;
-      font-size: 12px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      display: none;
     }
 
-    .navbar a:hover {
-      color: #888;
-    }
-
-    /* Spacious product-style grid */
     .games-container {
-      padding: 12px 12px 60px;
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      column-gap: 8px;
-      row-gap: 34px;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 8px;
+      padding: 10px 14px 30px;
+      align-items: start;
     }
 
     .game-card {
+      display: block;
+      aspect-ratio: 1 / 1;
       min-width: 0;
-      display: flex;
-      flex-direction: column;
-      color: #111;
+      overflow: hidden;
+      border: 1px solid #fff;
+      background: #000;
       text-decoration: none;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
     }
 
     .game-image {
       width: 100%;
-      aspect-ratio: 1 / 1;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      background: #fff;
+      background: #000;
     }
 
     .game-card img {
+      display: block;
       width: 100%;
       height: 100%;
       object-fit: contain;
-      mix-blend-mode: multiply;
-      transition: opacity 0.25s ease;
-    }
-
-    .game-card:hover img {
-      opacity: 0.72;
+      border-radius: 0;
+      margin: 0;
     }
 
     .game-card p {
-      margin: 12px 4px 0;
-      font-size: 12px;
-      line-height: 1.5;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
+      display: none;
     }
 
-    /* Responsive layout */
-    @media (min-width: 1500px) {
+    @media (min-width: 1200px) {
       .games-container {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        column-gap: 12px;
-        row-gap: 40px;
-      }
-
-      .game-card p {
-        font-size: 13px;
+        grid-template-columns: repeat(10, minmax(0, 1fr));
+        gap: 10px;
       }
     }
 
     @media (max-width: 700px) {
-      .navbar {
-        height: 52px;
-        padding: 0 14px;
-      }
-
       .games-container {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        padding: 8px 8px 40px;
-        column-gap: 6px;
-        row-gap: 24px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+        padding: 8px;
       }
+    }
 
-      .game-card p {
-        margin-top: 9px;
-        font-size: 11px;
+    @media (max-width: 400px) {
+      .games-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
   </style>
@@ -136,7 +102,7 @@
 <body>
   <nav class="navbar">
     <h2>crazycals</h2>
-    <a href="index.html">← Back</a>
+    <a href="index.html">Back</a>
   </nav>
 
   <main class="games-container">
@@ -145,91 +111,78 @@
       <div class="game-image">
         <img src="https://winblogs.thesourcemediaassets.com/2020/05/ac849e2218ad3291c33259ce3cc01f4a-3.png" alt="Edge Surf">
       </div>
-      <p>Edge Surf</p>
     </a>
 
     <a href="cookie-clicker/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="https://play-lh.googleusercontent.com/Z1MOuuiD05ZN5LkVmMEvKF0mqAc-FknaQ2j8s4dZiO-LSPQX4EEA3RVJdlQEtxe96ok" alt="Cookie Clicker">
       </div>
-      <p>Cookie Clicker</p>
     </a>
 
     <a href="breakoid/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="https://cdn-1.webcatalog.io/catalog/poki-breakoid/poki-breakoid-social-preview.png?v=1714778298638" alt="Breakoid">
       </div>
-      <p>Breakoid</p>
     </a>
 
     <a href="drivemad/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="https://play-lh.googleusercontent.com/7l3WAPbei9MXrxnCzImpXi2VxjEBtgDl0htwvTnA-YqpJAuQJPpSiby1oB8LZMgD0IAy" alt="Drive Mad">
       </div>
-      <p>Drive Mad</p>
     </a>
 
     <a href="OVOfr/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="https://play-lh.googleusercontent.com/v7KwGdPjJGjJjRXn46sck4DwDBdKSeRzGN44CjiXUtKV0jjOi51Bt4wcXud0m-SkXg" alt="OVO">
       </div>
-      <p>OVO</p>
     </a>
 
     <a href="basketbros/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="https://nargames.com/wp-content/uploads/2025/07/basket-bros.webp" alt="Basket Bros">
       </div>
-      <p>Basket Bros</p>
     </a>
 
     <a href="basketrandom/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="https://play-lh.googleusercontent.com/6AN9KKe5M9udzoQA1J00dc6po5dNY9JInI_ewDKcPXocPjEHWTqJV0d2CwSWxYRhTh4=w526-h296-rw" alt="Basket Random">
       </div>
-      <p>Basket Random</p>
     </a>
 
     <a href="bitlife/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="https://play-lh.googleusercontent.com/fUM-UyywXxjC8soxAZdIlxJrlRRXmql8wkE426SHzft4lJycSKVd2jCYQQX1BEG9Xw" alt="BitLife">
       </div>
-      <p>BitLife</p>
     </a>
 
     <a href="stickmanhook/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="https://play-lh.googleusercontent.com/yXqBI1Vb1b-xjwmXLE2T7FQbgHIxfvjze1b6jO2aLHfy8Y8ta7NFSEVqZoPHtM2Ajyrl=w600-h300-pc0xffffff-pd" alt="Stickman Hook">
       </div>
-      <p>Stickman Hook</p>
     </a>
 
     <a href="dogeminer/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwtRBmGnB51jFjT99isnQ7kRG9ILkKZKDUrg&s" alt="Dogeminer">
       </div>
-      <p>Dogeminer</p>
     </a>
 
     <a href="backrooms/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="https://backroomsgame.net/data/image/backrooms.png" alt="Backrooms">
       </div>
-      <p>Backrooms</p>
     </a>
 
     <a href="eurocup/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="https://play-lh.googleusercontent.com/G5ThgHq2f-ztdVhNw-dO89fVPmZA7ZVHrRfQTx-v8i9i2XV79CLQwg4E769j1yM6A7c" alt="Eurocup">
       </div>
-      <p>Eurocup</p>
     </a>
 
     <a href="re1/index.html" target="_blank" class="game-card">
       <div class="game-image">
         <img src="images/re1-cover.jpg" alt="Resident Evil Director's Cut">
       </div>
-      <p>Resident Evil: Director's Cut</p>
     </a>
 
   </main>
