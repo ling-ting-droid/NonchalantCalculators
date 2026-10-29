@@ -1,189 +1,351 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>crazycals</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>crazycals</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
+body {
+  background: #0b0b0c;
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
 
-    .navbar {
-      height: 40px;
-      padding: 0 14px;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      background: #000;
-    }
+/* NAVBAR */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 24px;
+  z-index: 10000;
+}
 
-    .navbar h2,
-    .navbar a {
-      display: none;
-    }
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
 
-    .games-container {
-      display: grid;
-      grid-template-columns: repeat(8, minmax(0, 1fr));
-      gap: 8px;
-      padding: 10px 14px 30px;
-      align-items: start;
-    }
+/* CAROUSEL */
+.stage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
 
-    .game-card {
-      display: block;
-      aspect-ratio: 1 / 1;
-      min-width: 0;
-      overflow: hidden;
-      border: 1px solid #fff;
-      background: #000;
-      text-decoration: none;
-      border-radius: 0;
-      box-shadow: none;
-      padding: 0;
-    }
+.stage {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
 
-    .game-image {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      background: #000;
-    }
+.card {
+  position: absolute;
+  width: 350px;
+  height: 350px;
+  border-radius: 0;
+  cursor: pointer;
+  overflow: hidden;
+  border: 1px solid white;
+  background: #000;
+  padding: 0;
+  box-shadow: none;
+  transition:
+    transform 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+    z-index 0.6s,
+    opacity 0.6s,
+    filter 0.4s ease;
+  backface-visibility: hidden;
+}
 
-    .game-card img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 0;
-      margin: 0;
-    }
+.card:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 5px;
+}
 
-    .game-card p {
-      display: none;
-    }
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  display: block;
+}
 
-    @media (min-width: 1200px) {
-      .games-container {
-        grid-template-columns: repeat(10, minmax(0, 1fr));
-        gap: 10px;
-      }
-    }
+.card.zoom-out {
+  transform: translateX(0px) translateZ(600px) rotateY(0deg) !important;
+  opacity: 0 !important;
+  filter: brightness(2);
+  z-index: 9999 !important;
+}
 
-    @media (max-width: 700px) {
-      .games-container {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 6px;
-        padding: 8px;
-      }
-    }
+.game-title {
+  margin-top: 25px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  height: 40px;
+  color: #fff;
+  text-align: center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 1;
+}
 
-    @media (max-width: 400px) {
-      .games-container {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-  </style>
+.game-title.changing {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@media (max-width: 600px) {
+  .stage {
+    height: 300px;
+  }
+
+  .card {
+    width: min(230px, 62vw);
+    height: min(230px, 62vw);
+  }
+
+  .game-title {
+    font-size: 1.1rem;
+    margin-top: 15px;
+  }
+}
+</style>
 </head>
 
 <body>
-  <nav class="navbar">
-    <h2>crazycals</h2>
-    <a href="index.html">Back</a>
-  </nav>
 
-  <main class="games-container">
+<nav class="navbar">
+  <a href="index.html">Back</a>
+</nav>
 
-    <a href="edgesurf/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://winblogs.thesourcemediaassets.com/2020/05/ac849e2218ad3291c33259ce3cc01f4a-3.png" alt="Edge Surf">
-      </div>
-    </a>
+<main class="stage-container">
+  <div class="stage" id="gameStage">
 
-    <a href="cookie-clicker/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://play-lh.googleusercontent.com/Z1MOuuiD05ZN5LkVmMEvKF0mqAc-FknaQ2j8s4dZiO-LSPQX4EEA3RVJdlQEtxe96ok" alt="Cookie Clicker">
-      </div>
-    </a>
+    <button class="card" data-index="0"
+      data-title="Edge Surf" data-link="edgesurf/index.html"
+      aria-label="Open Edge Surf">
+      <img src="https://winblogs.thesourcemediaassets.com/2020/05/ac849e2218ad3291c33259ce3cc01f4a-3.png" alt="Edge Surf">
+    </button>
 
-    <a href="breakoid/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://cdn-1.webcatalog.io/catalog/poki-breakoid/poki-breakoid-social-preview.png?v=1714778298638" alt="Breakoid">
-      </div>
-    </a>
+    <button class="card" data-index="1"
+      data-title="Cookie Clicker" data-link="cookie-clicker/index.html"
+      aria-label="Open Cookie Clicker">
+      <img src="https://play-lh.googleusercontent.com/Z1MOuuiD05ZN5LkVmMEvKF0mqAc-FknaQ2j8s4dZiO-LSPQX4EEA3RVJdlQEtxe96ok" alt="Cookie Clicker">
+    </button>
 
-    <a href="drivemad/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://play-lh.googleusercontent.com/7l3WAPbei9MXrxnCzImpXi2VxjEBtgDl0htwvTnA-YqpJAuQJPpSiby1oB8LZMgD0IAy" alt="Drive Mad">
-      </div>
-    </a>
+    <button class="card" data-index="2"
+      data-title="Breakoid" data-link="breakoid/index.html"
+      aria-label="Open Breakoid">
+      <img src="https://cdn-1.webcatalog.io/catalog/poki-breakoid/poki-breakoid-social-preview.png?v=1714778298638" alt="Breakoid">
+    </button>
 
-    <a href="OVOfr/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://play-lh.googleusercontent.com/v7KwGdPjJGjJjRXn46sck4DwDBdKSeRzGN44CjiXUtKV0jjOi51Bt4wcXud0m-SkXg" alt="OVO">
-      </div>
-    </a>
+    <button class="card" data-index="3"
+      data-title="Drive Mad" data-link="drivemad/index.html"
+      aria-label="Open Drive Mad">
+      <img src="https://play-lh.googleusercontent.com/7l3WAPbei9MXrxnCzImpXi2VxjEBtgDl0htwvTnA-YqpJAuQJPpSiby1oB8LZMgD0IAy" alt="Drive Mad">
+    </button>
 
-    <a href="basketbros/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://nargames.com/wp-content/uploads/2025/07/basket-bros.webp" alt="Basket Bros">
-      </div>
-    </a>
+    <button class="card" data-index="4"
+      data-title="OVO" data-link="OVOfr/index.html"
+      aria-label="Open OVO">
+      <img src="https://play-lh.googleusercontent.com/v7KwGdPjJGjJjRXn46sck4DwDBdKSeRzGN44CjiXUtKV0jjOi51Bt4wcXud0m-SkXg" alt="OVO">
+    </button>
 
-    <a href="basketrandom/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://play-lh.googleusercontent.com/6AN9KKe5M9udzoQA1J00dc6po5dNY9JInI_ewDKcPXocPjEHWTqJV0d2CwSWxYRhTh4=w526-h296-rw" alt="Basket Random">
-      </div>
-    </a>
+    <button class="card" data-index="5"
+      data-title="Basket Bros" data-link="basketbros/index.html"
+      aria-label="Open Basket Bros">
+      <img src="https://nargames.com/wp-content/uploads/2025/07/basket-bros.webp" alt="Basket Bros">
+    </button>
 
-    <a href="bitlife/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://play-lh.googleusercontent.com/fUM-UyywXxjC8soxAZdIlxJrlRRXmql8wkE426SHzft4lJycSKVd2jCYQQX1BEG9Xw" alt="BitLife">
-      </div>
-    </a>
+    <button class="card" data-index="6"
+      data-title="Basket Random" data-link="basketrandom/index.html"
+      aria-label="Open Basket Random">
+      <img src="https://play-lh.googleusercontent.com/6AN9KKe5M9udzoQA1J00dc6po5dNY9JInI_ewDKcPXocPjEHWTqJV0d2CwSWxYRhTh4=w526-h296-rw" alt="Basket Random">
+    </button>
 
-    <a href="stickmanhook/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://play-lh.googleusercontent.com/yXqBI1Vb1b-xjwmXLE2T7FQbgHIxfvjze1b6jO2aLHfy8Y8ta7NFSEVqZoPHtM2Ajyrl=w600-h300-pc0xffffff-pd" alt="Stickman Hook">
-      </div>
-    </a>
+    <button class="card" data-index="7"
+      data-title="BitLife" data-link="bitlife/index.html"
+      aria-label="Open BitLife">
+      <img src="https://play-lh.googleusercontent.com/fUM-UyywXxjC8soxAZdIlxJrlRRXmql8wkE426SHzft4lJycSKVd2jCYQQX1BEG9Xw" alt="BitLife">
+    </button>
 
-    <a href="dogeminer/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwtRBmGnB51jFjT99isnQ7kRG9ILkKZKDUrg&s" alt="Dogeminer">
-      </div>
-    </a>
+    <button class="card" data-index="8"
+      data-title="Stickman Hook" data-link="stickmanhook/index.html"
+      aria-label="Open Stickman Hook">
+      <img src="https://play-lh.googleusercontent.com/yXqBI1Vb1b-xjwmXLE2T7FQbgHIxfvjze1b6jO2aLHfy8Y8ta7NFSEVqZoPHtM2Ajyrl=w600-h300-pc0xffffff-pd" alt="Stickman Hook">
+    </button>
 
-    <a href="backrooms/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://backroomsgame.net/data/image/backrooms.png" alt="Backrooms">
-      </div>
-    </a>
+    <button class="card" data-index="9"
+      data-title="Dogeminer" data-link="dogeminer/index.html"
+      aria-label="Open Dogeminer">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwtRBmGnB51jFjT99isnQ7kRG9ILkKZKDUrg&s" alt="Dogeminer">
+    </button>
 
-    <a href="eurocup/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="https://play-lh.googleusercontent.com/G5ThgHq2f-ztdVhNw-dO89fVPmZA7ZVHrRfQTx-v8i9i2XV79CLQwg4E769j1yM6A7c" alt="Eurocup">
-      </div>
-    </a>
+    <button class="card" data-index="10"
+      data-title="Backrooms" data-link="backrooms/index.html"
+      aria-label="Open Backrooms">
+      <img src="https://backroomsgame.net/data/image/backrooms.png" alt="Backrooms">
+    </button>
 
-    <a href="re1/index.html" target="_blank" class="game-card">
-      <div class="game-image">
-        <img src="images/re1-cover.jpg" alt="Resident Evil Director's Cut">
-      </div>
-    </a>
+    <button class="card" data-index="11"
+      data-title="Eurocup" data-link="eurocup/index.html"
+      aria-label="Open Eurocup">
+      <img src="https://play-lh.googleusercontent.com/G5ThgHq2f-ztdVhNw-dO89fVPmZA7ZVHrRfQTx-v8i9i2XV79CLQwg4E769j1yM6A7c" alt="Eurocup">
+    </button>
 
-  </main>
+    <button class="card" data-index="12"
+      data-title="Resident Evil Director's Cut" data-link="re1/index.html"
+      aria-label="Open Resident Evil Director's Cut">
+      <img src="images/re1-cover.jpg" alt="Resident Evil Director's Cut">
+    </button>
+
+  </div>
+
+  <div class="game-title" id="current-title"></div>
+</main>
+
+<script>
+const cards = [...document.querySelectorAll(".card")];
+const totalCards = cards.length;
+const titleDisplay = document.getElementById("current-title");
+
+let activeIndex = 0;
+let navigating = false;
+let titleTimer;
+
+function updateLayout() {
+  let activeTitle = "";
+
+  titleDisplay.classList.add("changing");
+
+  cards.forEach((card) => {
+    if (card.classList.contains("zoom-out")) return;
+
+    const cardIndex = Number(card.dataset.index);
+
+    // Keep the carousel compact by wrapping the positions
+    let offset = cardIndex - activeIndex;
+    const half = Math.floor(totalCards / 2);
+
+    if (offset > half) offset -= totalCards;
+    if (offset < -half) offset += totalCards;
+
+    if (offset === 0) {
+      card.style.transform =
+        "translateX(0px) translateZ(150px) rotateY(0deg)";
+      card.style.zIndex = 100;
+      card.style.opacity = "1";
+      activeTitle = card.dataset.title;
+    } else if (offset < 0) {
+      const xPos = -430 + offset * 35;
+      card.style.transform =
+        `translateX(${xPos}px) translateZ(-150px) rotateY(55deg)`;
+      card.style.zIndex = 100 + offset;
+      card.style.opacity = Math.max(0.1, 1 - Math.abs(offset) * 0.2);
+    } else {
+      const xPos = 430 + offset * 35;
+      card.style.transform =
+        `translateX(${xPos}px) translateZ(-150px) rotateY(-55deg)`;
+      card.style.zIndex = 100 - offset;
+      card.style.opacity = Math.max(0.1, 1 - offset * 0.2);
+    }
+  });
+
+  clearTimeout(titleTimer);
+
+  titleTimer = setTimeout(() => {
+    titleDisplay.textContent = activeTitle || "Untitled Game";
+    titleDisplay.classList.remove("changing");
+  }, 200);
+}
+
+function handleCardAction(card) {
+  if (navigating) return;
+
+  const index = Number(card.dataset.index);
+
+  if (activeIndex !== index) {
+    activeIndex = index;
+    updateLayout();
+    return;
+  }
+
+  const destination = card.dataset.link;
+
+  if (destination) {
+    navigating = true;
+    card.classList.add("zoom-out");
+    titleDisplay.style.opacity = "0";
+    titleDisplay.style.transform = "translateY(15px)";
+
+    setTimeout(() => {
+      window.location.href = destination;
+    }, 500);
+  }
+}
+
+cards.forEach((card) => {
+  card.addEventListener("click", () => handleCardAction(card));
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowLeft") {
+    activeIndex = (activeIndex - 1 + totalCards) % totalCards;
+    updateLayout();
+  } else if (event.key === "ArrowRight") {
+    activeIndex = (activeIndex + 1) % totalCards;
+    updateLayout();
+  } else if (event.key === "Enter") {
+    const focusedCard = document.activeElement;
+    if (focusedCard && focusedCard.classList.contains("card")) {
+      focusedCard.click();
+    }
+  }
+});
+
+let touchStartX = 0;
+
+document.getElementById("gameStage").addEventListener("touchstart", (event) => {
+  touchStartX = event.changedTouches[0].screenX;
+}, { passive: true });
+
+document.getElementById("gameStage").addEventListener("touchend", (event) => {
+  const difference = event.changedTouches[0].screenX - touchStartX;
+
+  if (Math.abs(difference) > 50) {
+    activeIndex = difference < 0
+      ? (activeIndex + 1) % totalCards
+      : (activeIndex - 1 + totalCards) % totalCards;
+
+    updateLayout();
+  }
+}, { passive: true });
+
+updateLayout();
+</script>
+
 </body>
 </html>
