@@ -1,21 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>crazycals</title>
   <style>
-    
+    /* =========================================
+       1. CUSTOMISATION SETTINGS (EDIT THESE!)
+       ========================================= */
+    :root {
+      --globe-size: 180px;        /* Size of the globe */
+      --orbit-radius: 145px;      /* How wide the text ring is */
+      --tilt-angle: 72deg;        /* Tilt of the ring (70deg-80deg looks like Saturn) */
+      --spin-speed: 12s;          /* Seconds per full orbit (lower = faster) */
+      --text-color: #ffffff;      /* White text to pop against your black background */
+      --font-size: 20px;          /* Size of the letters */
+      --globe-color-1: #00f2fe;   /* Bright cyan highlight on the globe */
+      --globe-color-2: #005bea;   /* Deep blue shadow on the globe */
+    }
+
+    /* =========================================
+       2. YOUR EXISTING PAGE & NAVBAR STYLES
+       ========================================= */
     body {
-      margin: 0; font-family: sans-serif;
+      margin: 0; 
+      font-family: sans-serif;
       background: #000;
       color: #fff;
+      overflow-x: hidden; /* Prevents horizontal scrollbars from the wide 3D ring */
     }
 
     .navbar {
       position: fixed; top: 0; left: 0; right: 0;
-      display: flex; justify-content: space-between;
-      padding: 20px 40px; z-index: 10;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 40px; 
+      z-index: 20; /* Kept high so navbar stays clickable above the 3D scene */
       backdrop-filter: blur(8px);
+    }
+
+    .navbar h2 {
+      margin: 0;
     }
 
     .menu-btn {
@@ -28,11 +51,12 @@
     .overlay {
       position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0, 0, 0, 0.9);
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       gap: 20px; opacity: 0; pointer-events: none;
       transition: opacity 0.4s ease;
+      z-index: 30; /* Highest layer so menu covers the 3D globe when opened */
     }
 
     .overlay.active {
@@ -55,26 +79,124 @@
     .overlay a:nth-child(2) { transition-delay: 0.2s; }
     .overlay a:nth-child(3) { transition-delay: 0.3s; }
     .overlay a:nth-child(4) { transition-delay: 0.4s; }
-    
+
+    /* =========================================
+       3. HERO SECTION & 3D GLOBE STYLES
+       ========================================= */
+    .hero {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 900px; /* Gives the browser 3D depth perception */
+    }
+
+    .scene {
+      position: relative;
+      width: var(--globe-size);
+      height: var(--globe-size);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform-style: preserve-3d;
+    }
+
+    .globe {
+      position: absolute;
+      width: var(--globe-size);
+      height: var(--globe-size);
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, var(--globe-color-1), var(--globe-color-2), #020b26);
+      /* Inner shadow for 3D roundness + outer cyan glow so it stands out on black */
+      box-shadow: inset -20px -20px 40px rgba(0, 0, 0, 0.8),
+                  0 0 50px rgba(0, 242, 254, 0.25);
+      transform: translateZ(0px);
+    }
+
+    .orbit-tilt {
+      position: absolute;
+      transform-style: preserve-3d;
+      transform: rotateX(var(--tilt-angle)) rotateY(-15deg);
+    }
+
+    .text-ring {
+      position: relative;
+      transform-style: preserve-3d;
+      animation: orbit var(--spin-speed) linear infinite;
+    }
+
+    .text-ring span {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      font-size: var(--font-size);
+      font-weight: 900;
+      color: var(--text-color);
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(0, 242, 254, 0.6); /* Subtle neon text glow */
+      backface-visibility: visible;
+    }
+
+    @keyframes orbit {
+      from { transform: rotateZ(0deg); }
+      to   { transform: rotateZ(-360deg); }
+    }
   </style>
 </head>
 <body>
   
+  <!-- Navbar -->
   <div class="navbar">
     <h2>🌐 crazy calculators</h2>
     <div class="menu-btn" onclick="toggleMenu()">☰</div>
   </div>
 
+  <!-- Fullscreen Menu Overlay -->
   <div class="overlay" id="navOverlay">
     <a href="games.html">games</a>
     <a href="gust.html">not games</a>
-   
   </div>
 
+  <!-- Centre Hero Section with 3D Globe -->
+  <main class="hero">
+    <div class="scene">
+      <div class="globe"></div>
+      <div class="orbit-tilt">
+        <!-- Edit the text inside data-text="" to whatever you want -->
+        <div class="text-ring" id="orbit-text" data-text="CRAZY CALCULATORS • GAMES & MORE • "></div>
+      </div>
+    </div>
+  </main>
+
   <script>
+    // Your existing menu toggle function
     function toggleMenu() {
-      document.getElementById("navOverlay").classList.toggle("active")
+      document.getElementById("navOverlay").classList.toggle("active");
     }
+
+    // 3D Orbiting Text Script
+    const ring = document.getElementById('orbit-text');
+    const text = ring.getAttribute('data-text');
+    const letters = text.split('');
+    const angleStep = 360 / letters.length;
+
+    const radius = getComputedStyle(document.documentElement)
+      .getPropertyValue('--orbit-radius').trim();
+
+    letters.forEach((letter, index) => {
+      const span = document.createElement('span');
+      span.innerText = letter;
+      const angle = index * angleStep;
+
+      span.style.transform = `
+        translate(-50%, -50%) 
+        rotateZ(${angle}deg) 
+        translateY(${radius}) 
+        rotateX(-90deg)
+      `;
+
+      ring.appendChild(span);
+    });
   </script>
 
 </body>
