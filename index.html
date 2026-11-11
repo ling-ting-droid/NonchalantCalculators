@@ -9,13 +9,14 @@
        ========================================= */
     :root {
       --globe-size: 250px;        /* Size of the globe */
-      --orbit-radius: 145px;      /* How wide the text ring is */
-      --tilt-angle: 72deg;        /* Tilt of the ring (70deg-80deg looks like Saturn) */
+      --min-orbit-radius: 260px;  /* Minimum ring radius (auto-expands if text is long!) */
+      --tilt-angle: 72deg;        /* Tilt of the ring */
       --spin-speed: 20s;          /* Seconds per full orbit (lower = faster) */
-      --text-color: #ffffff;      /* White text to pop against your black background */
-      --font-size: 50px;          /* Size of the letters */
-      --globe-color-1: #00f2fe;   /* Bright cyan highlight on the globe */
-      --globe-color-2: #005bea;   /* Deep blue shadow on the globe */
+      --text-color: #ffffff;      /* Text colour */
+      --font-size: 28px;          /* Size of the letters (safe to change now!) */
+      --letter-spacing: 1.05;     /* Gap multiplier between letters (1.0 = tight, 1.3 = wide) */
+      --globe-color-1: #00f2fe;   /* Bright cyan highlight */
+      --globe-color-2: #005bea;   /* Deep blue shadow */
     }
 
     /* =========================================
@@ -23,23 +24,21 @@
        ========================================= */
     body {
       margin: 0; 
-      font-family: sans-serif;
+      font-family: monospace, sans-serif; /* Monospace keeps letter widths super even */
       background: #000;
       color: #fff;
-      overflow-x: hidden; /* Prevents horizontal scrollbars from the wide 3D ring */
+      overflow-x: hidden;
     }
 
     .navbar {
       position: fixed; top: 0; left: 0; right: 0;
       display: flex; justify-content: space-between; align-items: center;
       padding: 20px 40px; 
-      z-index: 20; /* Kept high so navbar stays clickable above the 3D scene */
+      z-index: 20;
       backdrop-filter: blur(8px);
     }
 
-    .navbar h2 {
-      margin: 0;
-    }
+    .navbar h2 { margin: 0; }
 
     .menu-btn {
       cursor: pointer; font-size: 30px;
@@ -56,12 +55,10 @@
       align-items: center; justify-content: center;
       gap: 20px; opacity: 0; pointer-events: none;
       transition: opacity 0.4s ease;
-      z-index: 30; /* Highest layer so menu covers the 3D globe when opened */
+      z-index: 30;
     }
 
-    .overlay.active {
-      opacity: 1; pointer-events: auto;
-    }
+    .overlay.active { opacity: 1; pointer-events: auto; }
 
     .overlay a {
       font-size: 2rem;
@@ -70,15 +67,9 @@
       opacity: 0; transition: 0.3s ease;
     }
 
-    .overlay.active a {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
+    .overlay.active a { transform: translateY(0); opacity: 1; }
     .overlay a:nth-child(1) { transition-delay: 0.1s; }
     .overlay a:nth-child(2) { transition-delay: 0.2s; }
-    .overlay a:nth-child(3) { transition-delay: 0.3s; }
-    .overlay a:nth-child(4) { transition-delay: 0.4s; }
 
     /* =========================================
        3. HERO SECTION & 3D GLOBE STYLES
@@ -88,7 +79,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      perspective: 900px; /* Gives the browser 3D depth perception */
+      perspective: 1000px;
     }
 
     .scene {
@@ -107,7 +98,6 @@
       height: var(--globe-size);
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, var(--globe-color-1), var(--globe-color-2), #020b26);
-      /* Inner shadow for 3D roundness + outer cyan glow so it stands out on black */
       box-shadow: inset -20px -20px 40px rgba(0, 0, 0, 0.8),
                   0 0 50px rgba(0, 242, 254, 0.25);
       transform: translateZ(0px);
@@ -116,7 +106,8 @@
     .orbit-tilt {
       position: absolute;
       transform-style: preserve-3d;
-      transform: rotateX(var(--tilt-angle)) rotateY(-15deg);
+      /* Tilts the ring so the front dips down and the back rises up */
+      transform: rotateX(var(--tilt-angle)) rotateY(-12deg);
     }
 
     .text-ring {
@@ -133,65 +124,74 @@
       font-weight: 900;
       color: var(--text-color);
       text-transform: uppercase;
-      text-shadow: 0 0 10px rgba(0, 242, 254, 0.6); /* Subtle neon text glow */
-      backface-visibility: visible;
+      text-shadow: 0 0 12px rgba(0, 242, 254, 0.7);
+      /* Hides the mirrored backs of letters so behind-the-globe text looks clean */
+      backface-visibility: hidden; 
     }
 
+    /* Spins clockwise so text flows naturally left-to-right across the front */
     @keyframes orbit {
       from { transform: rotateZ(0deg); }
-      to   { transform: rotateZ(-360deg); }
+      to   { transform: rotateZ(360deg); }
     }
   </style>
 </head>
 <body>
   
-  <!-- Navbar -->
   <div class="navbar">
     <h2>🌐 crazy calculators</h2>
     <div class="menu-btn" onclick="toggleMenu()">☰</div>
   </div>
 
-  <!-- Fullscreen Menu Overlay -->
   <div class="overlay" id="navOverlay">
     <a href="games.html">games</a>
     <a href="gust.html">not games</a>
   </div>
 
-  <!-- Centre Hero Section with 3D Globe -->
   <main class="hero">
     <div class="scene">
       <div class="globe"></div>
       <div class="orbit-tilt">
-        <!-- Edit the text inside data-text="" to whatever you want -->
-        <div class="text-ring" id="orbit-text" data-text="yall's games be eating my bandwith like umm, uhhh"></div>
+        <!-- Added a trailing bullet so the end doesn't crash into the start -->
+        <div class="text-ring" id="orbit-text" data-text="yall's games be eating my bandwidth like umm, uhhh • "></div>
       </div>
     </div>
   </main>
 
   <script>
-    // Your existing menu toggle function
     function toggleMenu() {
       document.getElementById("navOverlay").classList.toggle("active");
     }
 
-    // 3D Orbiting Text Script
     const ring = document.getElementById('orbit-text');
     const text = ring.getAttribute('data-text');
     const letters = text.split('');
-    const angleStep = 360 / letters.length;
+    const styles = getComputedStyle(document.documentElement);
 
-    const radius = getComputedStyle(document.documentElement)
-      .getPropertyValue('--orbit-radius').trim();
+    // Grab your settings from CSS
+    const minRadius = parseFloat(styles.getPropertyValue('--min-orbit-radius'));
+    const fontSize = parseFloat(styles.getPropertyValue('--font-size'));
+    const spacing = parseFloat(styles.getPropertyValue('--letter-spacing'));
+
+    // Auto-calculate the needed circumference so letters NEVER squish into each other
+    const charWidth = fontSize * 0.65 * spacing;
+    const neededRadius = (letters.length * charWidth) / (2 * Math.PI);
+    const finalRadius = Math.max(minRadius, neededRadius);
+
+    // Reverse the placement direction (-angleStep) so text reads left-to-right!
+    const angleStep = 360 / letters.length;
 
     letters.forEach((letter, index) => {
       const span = document.createElement('span');
-      span.innerText = letter;
-      const angle = index * angleStep;
+      // Convert normal spaces to non-breaking spaces so browsers don't collapse them
+      span.innerHTML = letter === ' ' ? '&nbsp;' : letter;
+
+      const angle = -index * angleStep;
 
       span.style.transform = `
         translate(-50%, -50%) 
         rotateZ(${angle}deg) 
-        translateY(${radius}) 
+        translateY(${finalRadius}px) 
         rotateX(-90deg)
       `;
 
